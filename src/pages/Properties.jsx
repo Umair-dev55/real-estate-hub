@@ -1,7 +1,7 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Building, SlidersHorizontal, Home, Sparkles } from 'lucide-react';
+import { Building } from 'lucide-react';
 import AnimatedSection, { StaggerContainer, StaggerItem } from '@/components/AnimatedSection';
 import PropertyCard from '@/components/PropertyCard';
 import PropertyFilters from '@/components/PropertyFilters';
@@ -14,8 +14,8 @@ import {
 export default function Properties() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Initialize filters from searchParams if present
-  const [filters, setFilters] = useState({
+  // Initialize filters from searchParams
+  const [filters, setFilters] = useState(() => ({
     location: searchParams.get('location') || '',
     type: searchParams.get('type') || '',
     purpose: searchParams.get('purpose') || '',
@@ -23,11 +23,12 @@ export default function Properties() {
     bedrooms: searchParams.get('bedrooms') || '',
     city: searchParams.get('city') || '',
     search: searchParams.get('search') || '',
-  });
+  }));
 
   const [sortBy, setSortBy] = useState('newest');
+  const debounceTimerRef = useRef(null);
 
-  // Sync with URL params when they change externally
+  // Sync state if URL search params change externally (e.g. browser back/forward or hero search navigation)
   useEffect(() => {
     setFilters({
       location: searchParams.get('location') || '',
@@ -38,18 +39,29 @@ export default function Properties() {
       city: searchParams.get('city') || '',
       search: searchParams.get('search') || '',
     });
-  }, [searchParams]);
+  }, [searchParams.toString()]);
+
+  const updateUrlParams = (newFilters) => {
+    const newParams = new URLSearchParams();
+    Object.entries(newFilters).forEach(([k, v]) => {
+      if (v) newParams.set(k, v);
+    });
+    setSearchParams(newParams, { replace: true });
+  };
 
   const handleFilterChange = (key, value) => {
     const updated = { ...filters, [key]: value };
     setFilters(updated);
 
-    // Update URL query string
-    const newParams = new URLSearchParams();
-    Object.entries(updated).forEach(([k, v]) => {
-      if (v) newParams.set(k, v);
-    });
-    setSearchParams(newParams, { replace: true });
+    if (key === 'search') {
+      // Debounce search URL update to avoid history clutter
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = setTimeout(() => {
+        updateUrlParams(updated);
+      }, 350);
+    } else {
+      updateUrlParams(updated);
+    }
   };
 
   const handleReset = () => {
@@ -157,4 +169,3 @@ export default function Properties() {
     </div>
   );
 }
-

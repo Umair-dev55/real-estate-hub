@@ -32,6 +32,18 @@ const variants = {
   },
 };
 
+// Static motion map prevents re-instantiating components on every render cycle
+const motionComponents = {
+  div: motion.div,
+  section: motion.section,
+  article: motion.article,
+  aside: motion.aside,
+  header: motion.header,
+  footer: motion.footer,
+  span: motion.span,
+  p: motion.p,
+};
+
 export default function AnimatedSection({
   children,
   variant = 'fadeUp',
@@ -44,7 +56,7 @@ export default function AnimatedSection({
 }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once, amount });
-  const Component = motion.create(as);
+  const Component = motionComponents[as] || motion.div;
 
   return (
     <Component
@@ -104,4 +116,3 @@ export function StaggerItem({
     </motion.div>
   );
 }
-

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -7,15 +7,10 @@ import {
   Bath,
   Maximize,
   Calendar,
-  Warehouse,
   CheckCircle,
   Share2,
   Heart,
-  ArrowLeft,
   Star,
-  Award,
-  Phone,
-  Mail,
   ShieldCheck,
   Building,
 } from 'lucide-react';
@@ -37,6 +32,11 @@ export default function PropertyDetail() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [copied, setCopied] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
+
+  // Reset active image when slug changes
+  useEffect(() => {
+    setActiveImageIndex(0);
+  }, [slug]);
 
   // If property not found
   if (!property) {
@@ -76,17 +76,24 @@ export default function PropertyDetail() {
 
   const handleShare = () => {
     if (navigator.share) {
-      navigator.share({
-        title: property.title,
-        text: `Check out ${property.title} in ${property.location} on Zameen Elite!`,
-        url: window.location.href,
-      }).catch(() => {});
+      navigator
+        .share({
+          title: property.title,
+          text: `Check out ${property.title} in ${property.location} on Zameen Elite!`,
+          url: window.location.href,
+        })
+        .catch(() => {});
     } else {
       navigator.clipboard.writeText(window.location.href);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
   };
+
+  // Location map dynamically generated for accuracy
+  const locationMapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(
+    property.location + ', ' + property.city + ', Pakistan'
+  )}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
 
   return (
     <div className="pt-24 pb-24 bg-gray-50/40">
@@ -117,6 +124,7 @@ export default function PropertyDetail() {
             </button>
             <button
               onClick={() => setIsFavorite(!isFavorite)}
+              aria-label={isFavorite ? 'Remove from favorites' : 'Save to favorites'}
               className="p-1.5 rounded-full border border-gray-200 hover:border-gray-300 text-gray-700 transition cursor-pointer"
             >
               <Heart
@@ -145,7 +153,7 @@ export default function PropertyDetail() {
                   initial={{ opacity: 0, scale: 1.02 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.4 }}
+                  transition={{ duration: 0.35 }}
                   className="w-full h-full object-cover"
                 />
               </AnimatePresence>
@@ -306,23 +314,23 @@ export default function PropertyDetail() {
               </div>
             </AnimatedSection>
 
-            {/* Location Overview */}
+            {/* Dynamic Location Map */}
             <AnimatedSection variant="fadeUp" className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100">
               <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#102a43] mb-2">
-                Prime Location
+                Prime Location: {property.location}
               </h2>
               <p className="text-sm text-gray-500 mb-4">
-                Situated in {property.location}, offering quick access to main highways,
-                premier schools, shopping arcades, and international dining spots.
+                Conveniently situated in {property.location}, {property.city}, offering quick
+                access to main arteries, international schools, dining avenues, and commercial hubs.
               </p>
-              <div className="w-full h-64 rounded-2xl overflow-hidden border border-gray-200">
+              <div className="w-full h-72 rounded-2xl overflow-hidden border border-gray-200">
                 <iframe
-                  title="Property Location Map"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d108865.17646569666!2d74.258752!3d31.4704!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39190483e58107d9%3A0xc23b0e6005c21dfa!2sDHA%20Lahore!5e0!3m2!1sen!2s!4v1700000000000"
+                  title={`Map showing ${property.title} in ${property.location}`}
+                  src={locationMapUrl}
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
-                  allowFullScreen=""
+                  allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                 />
@@ -409,4 +417,3 @@ export default function PropertyDetail() {
     </div>
   );
 }
-

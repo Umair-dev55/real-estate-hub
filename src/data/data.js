@@ -32,7 +32,7 @@ export const companyInfo = {
       phone: '+92 321 8888 999',
       email: 'lahore@zameenelite.pk',
       hours: 'Mon - Sat: 9:00 AM - 7:00 PM',
-      mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3402.5!2d74.3587!3d31.4697!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzHCsDI4JzExLjAiTiA3NMKwMjEnMzEuMyJF!5e0!3m2!1sen!2s!4v1',
+      mapUrl: 'https://maps.google.com/maps?q=DHA+Phase+6+Lahore+Pakistan&t=&z=14&ie=UTF8&iwloc=&output=embed',
     },
     {
       id: 2,
@@ -41,7 +41,7 @@ export const companyInfo = {
       phone: '+92 333 7777 888',
       email: 'islamabad@zameenelite.pk',
       hours: 'Mon - Sat: 9:00 AM - 7:00 PM',
-      mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3318.8!2d73.0479!3d33.7294!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDQzJzQ1LjgiTiA3M8KwMDInNTIuNCJF!5e0!3m2!1sen!2s!4v1',
+      mapUrl: 'https://maps.google.com/maps?q=Jinnah+Avenue+Blue+Area+Islamabad+Pakistan&t=&z=14&ie=UTF8&iwloc=&output=embed',
     },
     {
       id: 3,
@@ -50,7 +50,7 @@ export const companyInfo = {
       phone: '+92 300 6666 777',
       email: 'karachi@zameenelite.pk',
       hours: 'Mon - Sat: 9:00 AM - 7:00 PM',
-      mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3619.9!2d67.0311!3d24.8138!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjTCsDQ4JzQ5LjciTiA2N8KwMDEnNTIuMCJF!5e0!3m2!1sen!2s!4v1',
+      mapUrl: 'https://maps.google.com/maps?q=Ocean+Tower+Clifton+Karachi+Pakistan&t=&z=14&ie=UTF8&iwloc=&output=embed',
     },
   ],
   socialLinks: {
@@ -140,7 +140,7 @@ export const propertyTypes = [
 export const purposes = ['Buy', 'Rent'];
 
 // ---- PRICE RANGES ----
-export const priceRanges = [
+export const buyPriceRanges = [
   { label: 'Under 50 Lakh', min: 0, max: 5000000 },
   { label: '50 Lakh - 1 Crore', min: 5000000, max: 10000000 },
   { label: '1 - 3 Crore', min: 10000000, max: 30000000 },
@@ -148,6 +148,15 @@ export const priceRanges = [
   { label: '5 - 10 Crore', min: 50000000, max: 100000000 },
   { label: 'Above 10 Crore', min: 100000000, max: Infinity },
 ];
+
+export const rentPriceRanges = [
+  { label: 'Under 1 Lakh/month', min: 0, max: 100000 },
+  { label: '1 - 2 Lakh/month', min: 100000, max: 200000 },
+  { label: '2 - 5 Lakh/month', min: 200000, max: 500000 },
+  { label: 'Above 5 Lakh/month', min: 500000, max: Infinity },
+];
+
+export const priceRanges = [...buyPriceRanges, ...rentPriceRanges];
 
 export const bedroomOptions = [1, 2, 3, 4, 5, 6, 7, 8, 10];
 
@@ -246,21 +255,21 @@ export const teamMembers = [
     name: 'Bilal Mahmood',
     title: 'CEO & Founder',
     description: 'Visionary leader with 20+ years in Pakistani real estate development.',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
+    image: 'https://plus.unsplash.com/premium_photo-1661297460381-f75b8ae69a0f?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
   },
   {
     id: 2,
     name: 'Sana Hussain',
     title: 'Chief Operations Officer',
     description: 'Operations expert ensuring seamless property transactions nationwide.',
-    image: 'https://images.unsplash.com/photo-1594824476967-48c8b964f137?w=400&h=400&fit=crop&crop=face',
+    image: 'https://images.unsplash.com/photo-1634595477722-7bc68dd410fd?q=80&w=464&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
   },
   {
     id: 3,
     name: 'Usman Ghani',
     title: 'Head of Sales',
     description: 'Strategic sales leader who has closed 1000+ premium property deals.',
-    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face',
+    image: 'https://images.unsplash.com/photo-1771244702701-6c9edac63255?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
   },
   {
     id: 4,
@@ -1026,20 +1035,20 @@ export function filterProperties({ location, type, purpose, priceRange, bedrooms
     if (type && property.type !== type) return false;
     if (purpose && property.purpose !== purpose) return false;
     if (city && property.city !== city) return false;
-    if (bedrooms && property.bedrooms !== Number(bedrooms)) return false;
+    if (bedrooms && property.bedrooms < Number(bedrooms)) return false;
     if (priceRange) {
       const range = priceRanges.find((r) => r.label === priceRange);
       if (range && (property.price < range.min || property.price > range.max)) return false;
     }
     if (search) {
-      const q = search.toLowerCase();
-      if (
-        !property.title.toLowerCase().includes(q) &&
-        !property.location.toLowerCase().includes(q) &&
-        !property.type.toLowerCase().includes(q) &&
-        !property.city.toLowerCase().includes(q)
-      )
-        return false;
+      const q = search.toLowerCase().trim();
+      const match =
+        property.title.toLowerCase().includes(q) ||
+        property.location.toLowerCase().includes(q) ||
+        property.type.toLowerCase().includes(q) ||
+        property.city.toLowerCase().includes(q) ||
+        property.description.toLowerCase().includes(q);
+      if (!match) return false;
     }
     return true;
   });
