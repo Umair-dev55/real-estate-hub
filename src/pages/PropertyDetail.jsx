@@ -13,6 +13,8 @@ import {
   Star,
   ShieldCheck,
   Building,
+  Phone,
+  MessageCircle,
 } from 'lucide-react';
 import AnimatedSection from '@/components/AnimatedSection';
 import PropertyCard from '@/components/PropertyCard';
@@ -95,32 +97,41 @@ export default function PropertyDetail() {
     property.location + ', ' + property.city + ', Pakistan'
   )}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
 
+  // Mobile sticky bar links (digits only for wa.me)
+  const whatsappNumber = String(agent.whatsapp || '').replace(/\D/g, '');
+  const whatsappMessage = encodeURIComponent(
+    `Hi, I'm interested in "${property.title}" (${property.location}).`
+  );
+
   return (
-    <div className="pt-24 pb-24 bg-gray-50/40">
+    <div className="pt-24 pb-28 lg:pb-24 bg-gray-50/40">
       {/* Breadcrumb / Top Bar */}
       <div className="bg-white border-b border-gray-100 py-3.5 mb-6">
-        <div className="container-custom flex items-center justify-between text-xs text-gray-500">
-          <div className="flex items-center gap-2">
-            <Link to="/" className="hover:text-[#c8922f] transition">
+        <div className="container-custom flex items-center justify-between gap-3 text-xs text-gray-500">
+          <div className="flex items-center gap-2 min-w-0">
+            <Link to="/" className="hover:text-[#c8922f] transition shrink-0">
               Home
             </Link>
-            <span>/</span>
-            <Link to="/properties" className="hover:text-[#c8922f] transition">
+            <span className="shrink-0">/</span>
+            <Link to="/properties" className="hover:text-[#c8922f] transition shrink-0">
               Properties
             </Link>
-            <span>/</span>
-            <span className="text-gray-900 font-medium truncate max-w-[200px] sm:max-w-md">
+            <span className="shrink-0">/</span>
+            <span className="text-gray-900 font-medium truncate min-w-0 max-w-[110px] sm:max-w-md">
               {property.title}
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <button
               onClick={handleShare}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 hover:border-gray-300 text-gray-700 text-xs font-medium transition cursor-pointer"
+              aria-label="Share property"
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full border border-gray-200 hover:border-gray-300 text-gray-700 text-xs font-medium transition cursor-pointer"
             >
               <Share2 className="w-3.5 h-3.5" />
-              <span>{copied ? 'Copied Link!' : 'Share'}</span>
+              <span className={copied ? 'inline' : 'hidden sm:inline'}>
+                {copied ? 'Copied!' : 'Share'}
+              </span>
             </button>
             <button
               onClick={() => setIsFavorite(!isFavorite)}
@@ -144,7 +155,7 @@ export default function PropertyDetail() {
         <AnimatedSection variant="fadeUp" className="mb-8">
           <div className="space-y-3">
             {/* Main Featured Image */}
-            <div className="relative rounded-3xl overflow-hidden aspect-[16/9] sm:aspect-[21/9] max-h-[560px] bg-gray-900 shadow-xl">
+            <div className="relative rounded-3xl overflow-hidden aspect-[16/9] lg:aspect-[21/9] max-h-[560px] bg-gray-900 shadow-xl">
               <AnimatePresence mode="wait">
                 <motion.img
                   key={activeImageIndex}
@@ -176,7 +187,7 @@ export default function PropertyDetail() {
 
             {/* Thumbnail Strip */}
             {property.images.length > 1 && (
-              <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
+              <div className="flex gap-3 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {property.images.map((imgUrl, index) => (
                   <button
                     key={index}
@@ -350,9 +361,9 @@ export default function PropertyDetail() {
                   <img
                     src={agent.image}
                     alt={agent.name}
-                    className="w-16 h-16 rounded-2xl object-cover shadow"
+                    className="w-16 h-16 rounded-2xl object-cover shadow shrink-0"
                   />
-                  <div>
+                  <div className="min-w-0">
                     <h3 className="font-serif text-lg font-bold text-[#102a43]">
                       {agent.name}
                     </h3>
@@ -413,6 +424,28 @@ export default function PropertyDetail() {
             </div>
           </section>
         )}
+      </div>
+
+      {/* ========================================================
+          MOBILE STICKY CONTACT BAR (hidden on lg+)
+         ======================================================== */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-gray-200 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex gap-3 shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
+        <a
+          href={`tel:${agent.phone}`}
+          className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-[#102a43] text-white py-2.5 text-sm font-semibold"
+        >
+          <Phone className="w-4 h-4" />
+          Call
+        </a>
+        <a
+          href={`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-green-500 text-white py-2.5 text-sm font-semibold"
+        >
+          <MessageCircle className="w-4 h-4" />
+          WhatsApp
+        </a>
       </div>
     </div>
   );
