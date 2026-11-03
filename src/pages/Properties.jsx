@@ -1,45 +1,66 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { Building } from 'lucide-react';
-import AnimatedSection, { StaggerContainer, StaggerItem } from '@/components/AnimatedSection';
+import AnimatedSection from '@/components/AnimatedSection';
 import PropertyCard from '@/components/PropertyCard';
 import PropertyFilters from '@/components/PropertyFilters';
 import {
-  properties,
   filterProperties,
   sortProperties,
 } from '@/data/data.js';
+
+const EMPTY_FILTERS = {
+  location: '',
+  type: '',
+  purpose: '',
+  priceRange: '',
+  bedrooms: '',
+  city: '',
+  search: '',
+};
+
+const readFiltersFromParams = (params) => ({
+  location: params.get('location') || '',
+  type: params.get('type') || '',
+  purpose: params.get('purpose') || '',
+  priceRange: params.get('priceRange') || '',
+  bedrooms: params.get('bedrooms') || '',
+  city: params.get('city') || '',
+  search: params.get('search') || '',
+});
+
+// Grid animation: uses `animate` (not whileInView) so cards always appear,
+// even on page reload / restored scroll position.
+const gridVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06 } },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35 } },
+};
 
 export default function Properties() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Initialize filters from searchParams
-  const [filters, setFilters] = useState(() => ({
-    location: searchParams.get('location') || '',
-    type: searchParams.get('type') || '',
-    purpose: searchParams.get('purpose') || '',
-    priceRange: searchParams.get('priceRange') || '',
-    bedrooms: searchParams.get('bedrooms') || '',
-    city: searchParams.get('city') || '',
-    search: searchParams.get('search') || '',
-  }));
-
+  const [filters, setFilters] = useState(() => readFiltersFromParams(searchParams));
   const [sortBy, setSortBy] = useState('newest');
   const debounceTimerRef = useRef(null);
 
-  // Sync state if URL search params change externally (e.g. browser back/forward or hero search navigation)
+  // Sync state if URL search params change externally (browser back/forward, hero search)
   useEffect(() => {
-    setFilters({
-      location: searchParams.get('location') || '',
-      type: searchParams.get('type') || '',
-      purpose: searchParams.get('purpose') || '',
-      priceRange: searchParams.get('priceRange') || '',
-      bedrooms: searchParams.get('bedrooms') || '',
-      city: searchParams.get('city') || '',
-      search: searchParams.get('search') || '',
-    });
+    setFilters(readFiltersFromParams(searchParams));
   }, [searchParams.toString()]);
+
+  // Cleanup pending debounce on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    };
+  }, []);
 
   const updateUrlParams = (newFilters) => {
     const newParams = new URLSearchParams();
@@ -65,24 +86,16 @@ export default function Properties() {
   };
 
   const handleReset = () => {
-    const cleared = {
-      location: '',
-      type: '',
-      purpose: '',
-      priceRange: '',
-      bedrooms: '',
-      city: '',
-      search: '',
-    };
-    setFilters(cleared);
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    setFilters(EMPTY_FILTERS);
     setSortBy('newest');
     setSearchParams({}, { replace: true });
   };
 
   // Filtered and sorted properties
   const filteredList = useMemo(() => {
-    const filtered = filterProperties(filters);
-    return sortProperties(filtered, sortBy);
+    const filtered = filterProperties(filters) || [];
+    return sortProperties(filtered, sortBy) || [];
   }, [filters, sortBy]);
 
   return (
@@ -118,53 +131,42 @@ export default function Properties() {
         />
 
         {/* Results Grid */}
-        <AnimatePresence mode="wait">
-          {filteredList.length > 0 ? (
-            <motion.div
-              key="results"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <StaggerContainer
-                staggerDelay={0.08}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7"
-              >
-                {filteredList.map((property) => (
-                  <StaggerItem key={property.id}>
-                    <PropertyCard property={property} />
-                  </StaggerItem>
-                ))}
-              </StaggerContainer>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="empty"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              className="bg-white rounded-3xl p-12 text-center max-w-lg mx-auto shadow-sm border border-gray-100 my-12"
-            >
-              <div className="w-16 h-16 rounded-full bg-amber-50 text-[#c8922f] flex items-center justify-center mx-auto mb-4">
-                <Building className="w-8 h-8" />
-              </div>
-              <h3 className="font-serif text-2xl font-bold text-[#102a43] mb-2">
-                No Properties Found
-              </h3>
-              <p className="text-sm text-gray-500 mb-6">
-                We couldn’t find any listings matching your current filter criteria. Try
-                broadening your search or reset the filters.
-              </p>
-              <button
-                onClick={handleReset}
-                className="btn-primary"
-              >
-                Reset All Filters
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {filteredList.length > 0 ? (
+          <motion.div
+            // Re-run the stagger whenever the filter/sort result set changes
+            key={filteredList.map((p) => p.id).join('-')}
+            variants={gridVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7"
+          >
+            {filteredList.map((property) => (
+              <motion.div key={property.id} variants={itemVariants}>
+                <PropertyCard property={property} />
+              </motion.div>
+            ))}
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-3xl p-12 text-center max-w-lg mx-auto shadow-sm border border-gray-100 my-12"
+          >
+            <div className="w-16 h-16 rounded-full bg-amber-50 text-[#c8922f] flex items-center justify-center mx-auto mb-4">
+              <Building className="w-8 h-8" />
+            </div>
+            <h3 className="font-serif text-2xl font-bold text-[#102a43] mb-2">
+              No Properties Found
+            </h3>
+            <p className="text-sm text-gray-500 mb-6">
+              We couldn’t find any listings matching your current filter criteria. Try
+              broadening your search or reset the filters.
+            </p>
+            <button onClick={handleReset} className="btn-primary">
+              Reset All Filters
+            </button>
+          </motion.div>
+        )}
       </div>
     </div>
   );
