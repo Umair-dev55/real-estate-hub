@@ -44,7 +44,19 @@
   html {
     scroll-behavior: smooth;
   }
-
+/* Hide scrollbar on the whole site (scrolling still works) */
+html,
+body {
+  -ms-overflow-style: none; /* IE / old Edge */
+  scrollbar-width: none;    /* Firefox */
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none;            /* Chrome, Safari, Edge */
+  width: 0;
+  height: 0;
+}
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
