@@ -11,22 +11,26 @@ import {
 } from '@/data/data.js';
 
 const EMPTY_FILTERS = {
+  country: '',
+  city: '',
   location: '',
   type: '',
   purpose: '',
-  priceRange: '',
+  minPrice: '',
+  maxPrice: '',
   bedrooms: '',
-  city: '',
   search: '',
 };
 
 const readFiltersFromParams = (params) => ({
+  country: params.get('country') || '',
+  city: params.get('city') || '',
   location: params.get('location') || '',
   type: params.get('type') || '',
   purpose: params.get('purpose') || '',
-  priceRange: params.get('priceRange') || '',
+  minPrice: params.get('minPrice') || '',
+  maxPrice: params.get('maxPrice') || '',
   bedrooms: params.get('bedrooms') || '',
-  city: params.get('city') || '',
   search: params.get('search') || '',
 });
 
@@ -47,7 +51,7 @@ export default function Properties() {
 
   // Initialize filters from searchParams
   const [filters, setFilters] = useState(() => readFiltersFromParams(searchParams));
-  const [sortBy, setSortBy] = useState('newest');
+  const sortBy = searchParams.get('sort') || 'newest';
   const debounceTimerRef = useRef(null);
 
   // Sync state if URL search params change externally (browser back/forward, hero search)
@@ -62,13 +66,24 @@ export default function Properties() {
     };
   }, []);
 
-  const updateUrlParams = (newFilters) => {
+  const updateUrlParams = (newFilters, sort = sortBy) => {
     const newParams = new URLSearchParams();
     Object.entries(newFilters).forEach(([k, v]) => {
       if (v) newParams.set(k, v);
     });
+    if (sort && sort !== 'newest') newParams.set('sort', sort);
     setSearchParams(newParams, { replace: true });
   };
+
+  // Change several filters at once (e.g. country change also clears city + area)
+  const handleFiltersChange = (patch) => {
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    const updated = { ...filters, ...patch };
+    setFilters(updated);
+    updateUrlParams(updated);
+  };
+
+  const handleSortChange = (value) => updateUrlParams(filters, value);
 
   const handleFilterChange = (key, value) => {
     const updated = { ...filters, [key]: value };
@@ -88,7 +103,6 @@ export default function Properties() {
   const handleReset = () => {
     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
     setFilters(EMPTY_FILTERS);
-    setSortBy('newest');
     setSearchParams({}, { replace: true });
   };
 
@@ -112,8 +126,8 @@ export default function Properties() {
               Explore Premium Properties
             </h1>
             <p className="text-sm sm:text-base text-gray-300">
-              Browse houses, luxury villas, modern apartments, and prime plots across DHA,
-              Bahria Town, Gulberg, and more.
+              Filter by country, city, area, category and budget to find the right
+              home, villa, apartment or plot.
             </p>
           </AnimatedSection>
         </div>
@@ -126,10 +140,10 @@ export default function Properties() {
           onFilterChange={handleFilterChange}
           onReset={handleReset}
           sortBy={sortBy}
-          onSortChange={setSortBy}
+          onSortChange={handleSortChange}
+          onFiltersChange={handleFiltersChange}
           totalResults={filteredList.length}
-        />
-
+        >
         {/* Results Grid */}
         {filteredList.length > 0 ? (
           <motion.div
@@ -138,7 +152,7 @@ export default function Properties() {
             variants={gridVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7"
+            className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-7"
           >
             {filteredList.map((property) => (
               <motion.div key={property.id} variants={itemVariants}>
@@ -167,6 +181,8 @@ export default function Properties() {
             </button>
           </motion.div>
         )}
+        </PropertyFilters>
+
       </div>
     </div>
   );

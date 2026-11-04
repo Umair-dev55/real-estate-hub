@@ -109,6 +109,7 @@ export const locations = [
   'Johar Town, Lahore',
   'Model Town, Lahore',
   'Cantt, Lahore',
+  'Bedian Road, Lahore',
   'DHA Phase 1, Islamabad',
   'DHA Phase 2, Islamabad',
   'Bahria Town, Islamabad',
@@ -124,6 +125,19 @@ export const locations = [
 ];
 
 export const cities = ['Lahore', 'Islamabad', 'Karachi', 'Rawalpindi', 'Faisalabad'];
+
+// Country -> cities. Add a new country here (and set `country` on its listings)
+// and every dropdown on the site picks it up automatically.
+export const citiesByCountry = {
+  Pakistan: cities,
+};
+export const countries = Object.keys(citiesByCountry);
+
+// Localities of a city (derived from the `locations` list: "DHA Phase 6, Lahore")
+export const getLocalitiesByCity = (city) =>
+  locations
+    .filter((l) => l.split(',').pop().trim() === city)
+    .map((l) => l.split(',').slice(0, -1).join(',').trim());
 
 // ---- PROPERTY TYPES ----
 export const propertyTypes = [
@@ -157,6 +171,27 @@ export const rentPriceRanges = [
 ];
 
 export const priceRanges = [...buyPriceRanges, ...rentPriceRanges];
+
+// Min / Max price dropdown steps (used by the Properties filter)
+export const priceSteps = {
+  Buy: [
+    { label: '25 Lakh', value: 2500000 },
+    { label: '50 Lakh', value: 5000000 },
+    { label: '1 Crore', value: 10000000 },
+    { label: '2 Crore', value: 20000000 },
+    { label: '3 Crore', value: 30000000 },
+    { label: '5 Crore', value: 50000000 },
+    { label: '10 Crore', value: 100000000 },
+  ],
+  Rent: [
+    { label: '50 Thousand', value: 50000 },
+    { label: '1 Lakh', value: 100000 },
+    { label: '2 Lakh', value: 200000 },
+    { label: '3 Lakh', value: 300000 },
+    { label: '5 Lakh', value: 500000 },
+    { label: '10 Lakh', value: 1000000 },
+  ],
+};
 
 export const bedroomOptions = [1, 2, 3, 4, 5, 6, 7, 8, 10];
 
@@ -320,6 +355,7 @@ export const properties = [
     priceFormatted: '8.5 Crore',
     location: 'DHA Phase 6, Lahore',
     city: 'Lahore',
+    country: 'Pakistan',
     area: '1 Kanal',
     areaSqft: 4500,
     bedrooms: 6,
@@ -364,6 +400,7 @@ export const properties = [
     priceFormatted: '3.2 Crore',
     location: 'Gulberg III, Lahore',
     city: 'Lahore',
+    country: 'Pakistan',
     area: '2400 sq ft',
     areaSqft: 2400,
     bedrooms: 3,
@@ -403,6 +440,7 @@ export const properties = [
     priceFormatted: '5.5 Crore',
     location: 'Bahria Town, Islamabad',
     city: 'Islamabad',
+    country: 'Pakistan',
     area: '3800 sq ft',
     areaSqft: 3800,
     bedrooms: 4,
@@ -444,6 +482,7 @@ export const properties = [
     priceFormatted: '4.5 Lakh/month',
     location: 'DHA Phase 2, Islamabad',
     city: 'Islamabad',
+    country: 'Pakistan',
     area: '10 Marla',
     areaSqft: 2722,
     bedrooms: 4,
@@ -484,6 +523,7 @@ export const properties = [
     priceFormatted: '4.2 Crore',
     location: 'Clifton, Karachi',
     city: 'Karachi',
+    country: 'Pakistan',
     area: '2800 sq ft',
     areaSqft: 2800,
     bedrooms: 3,
@@ -524,6 +564,7 @@ export const properties = [
     priceFormatted: '12 Crore',
     location: 'Bahria Town, Lahore',
     city: 'Lahore',
+    country: 'Pakistan',
     area: '2 Kanal',
     areaSqft: 9000,
     bedrooms: 8,
@@ -570,6 +611,7 @@ export const properties = [
     priceFormatted: '85,000/month',
     location: 'F-7, Islamabad',
     city: 'Islamabad',
+    country: 'Pakistan',
     area: '950 sq ft',
     areaSqft: 950,
     bedrooms: 1,
@@ -605,6 +647,7 @@ export const properties = [
     priceFormatted: '25 Crore',
     location: 'Gulberg, Lahore',
     city: 'Lahore',
+    country: 'Pakistan',
     area: '15000 sq ft',
     areaSqft: 15000,
     bedrooms: 0,
@@ -640,6 +683,7 @@ export const properties = [
     priceFormatted: '4.5 Crore',
     location: 'Bedian Road, Lahore',
     city: 'Lahore',
+    country: 'Pakistan',
     area: '4 Kanal',
     areaSqft: 18000,
     bedrooms: 5,
@@ -678,6 +722,7 @@ export const properties = [
     priceFormatted: '6.5 Crore',
     location: 'DHA Phase 7, Lahore',
     city: 'Lahore',
+    country: 'Pakistan',
     area: '1 Kanal',
     areaSqft: 4500,
     bedrooms: 5,
@@ -718,6 +763,7 @@ export const properties = [
     priceFormatted: '1.8 Lakh/month',
     location: 'E-11, Islamabad',
     city: 'Islamabad',
+    country: 'Pakistan',
     area: '1800 sq ft',
     areaSqft: 1800,
     bedrooms: 3,
@@ -755,6 +801,7 @@ export const properties = [
     priceFormatted: '9.5 Crore',
     location: 'DHA Phase 8, Karachi',
     city: 'Karachi',
+    country: 'Pakistan',
     area: '500 sq yards',
     areaSqft: 4500,
     bedrooms: 6,
@@ -797,6 +844,7 @@ export const properties = [
     priceFormatted: '3.5 Crore',
     location: 'DHA Phase 5, Lahore',
     city: 'Lahore',
+    country: 'Pakistan',
     area: '1 Kanal',
     areaSqft: 4500,
     bedrooms: 0,
@@ -824,6 +872,7 @@ export const properties = [
     priceFormatted: '2.8 Crore',
     location: 'Johar Town, Lahore',
     city: 'Lahore',
+    country: 'Pakistan',
     area: '10 Marla',
     areaSqft: 2722,
     bedrooms: 4,
@@ -862,6 +911,7 @@ export const properties = [
     priceFormatted: '1.5 Lakh/month',
     location: 'Gulshan-e-Iqbal, Karachi',
     city: 'Karachi',
+    country: 'Pakistan',
     area: '1600 sq ft',
     areaSqft: 1600,
     bedrooms: 3,
@@ -899,6 +949,7 @@ export const properties = [
     priceFormatted: '7.5 Crore',
     location: 'Model Town, Lahore',
     city: 'Lahore',
+    country: 'Pakistan',
     area: '1 Kanal',
     areaSqft: 4500,
     bedrooms: 5,
@@ -1029,26 +1080,30 @@ export function formatPrice(price, purpose) {
   }
 }
 
-export function filterProperties({ location, type, purpose, priceRange, bedrooms, city, search }) {
-  return properties.filter((property) => {
-    if (location && !property.location.toLowerCase().includes(location.toLowerCase())) return false;
-    if (type && property.type !== type) return false;
-    if (purpose && property.purpose !== purpose) return false;
-    if (city && property.city !== city) return false;
-    if (bedrooms && property.bedrooms < Number(bedrooms)) return false;
-    if (priceRange) {
-      const range = priceRanges.find((r) => r.label === priceRange);
-      if (range && (property.price < range.min || property.price > range.max)) return false;
-    }
-    if (search) {
-      const q = search.toLowerCase().trim();
-      const match =
-        property.title.toLowerCase().includes(q) ||
-        property.location.toLowerCase().includes(q) ||
-        property.type.toLowerCase().includes(q) ||
-        property.city.toLowerCase().includes(q) ||
-        property.description.toLowerCase().includes(q);
-      if (!match) return false;
+export function filterProperties({
+  country,
+  city,
+  location,
+  type,
+  purpose,
+  minPrice,
+  maxPrice,
+  bedrooms,
+  search,
+} = {}) {
+  const q = (search || '').toLowerCase().trim();
+  return properties.filter((p) => {
+    if (country && p.country !== country) return false;
+    if (city && p.city !== city) return false;
+    if (location && !p.location.toLowerCase().includes(location.toLowerCase())) return false;
+    if (type && p.type !== type) return false;
+    if (purpose && p.purpose !== purpose) return false;
+    if (bedrooms && p.bedrooms < Number(bedrooms)) return false;
+    if (minPrice && p.price < Number(minPrice)) return false;
+    if (maxPrice && p.price > Number(maxPrice)) return false;
+    if (q) {
+      const hay = `${p.title} ${p.location} ${p.type} ${p.city} ${p.country} ${p.description}`.toLowerCase();
+      if (!hay.includes(q)) return false;
     }
     return true;
   });

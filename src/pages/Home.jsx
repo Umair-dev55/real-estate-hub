@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
   Search,
+  Globe,
   MapPin,
   Building2,
   ShieldCheck,
@@ -21,28 +22,31 @@ import {
   getFeaturedProperties,
   trustIndicators,
   statistics,
-  locations,
+  countries,
+  citiesByCountry,
   propertyTypes,
-  priceRanges,
 } from '@/data/data.js';
 
 export default function Home() {
   const navigate = useNavigate();
   const featured = getFeaturedProperties();
 
-  // Hero search bar states
-  const [selectedLocation, setSelectedLocation] = useState('');
-  const [selectedType, setSelectedType] = useState('');
-  const [selectedBudget, setSelectedBudget] = useState('');
+  // Hero search bar states: Country -> City -> Category
+  const [country, setCountry] = useState(countries[0] || '');
+  const [city, setCity] = useState('');
+  const [category, setCategory] = useState('');
+
+  const cityOptions = citiesByCountry[country] || [];
 
   const handleHeroSearch = (e) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (selectedLocation) params.set('location', selectedLocation);
-    if (selectedType) params.set('type', selectedType);
-    if (selectedBudget) params.set('priceRange', selectedBudget);
+    if (country) params.set('country', country);
+    if (city) params.set('city', city);
+    if (category) params.set('type', category);
     navigate(`/properties?${params.toString()}`);
   };
+
 
   const trustIconMap = {
     Building2: Building2,
@@ -130,66 +134,68 @@ export default function Home() {
               onSubmit={handleHeroSearch}
               className="flex flex-col sm:flex-row items-center gap-2 sm:gap-1"
             >
-              {/* Location Select */}
+              {/* Country */}
+              <div className="flex-1 w-full flex items-center gap-3 px-4 py-2.5 sm:py-2 border-b sm:border-b-0 sm:border-r border-gray-100">
+                <Globe className="w-5 h-5 text-[#c9a96e] shrink-0" />
+                <div className="flex-1">
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                    Country
+                  </label>
+                  <select
+                    value={country}
+                    onChange={(e) => {
+                      setCountry(e.target.value);
+                      setCity('');
+                    }}
+                    className="w-full bg-transparent text-sm font-semibold text-gray-800 focus:outline-none cursor-pointer"
+                  >
+                    {countries.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* City */}
               <div className="flex-1 w-full flex items-center gap-3 px-4 py-2.5 sm:py-2 border-b sm:border-b-0 sm:border-r border-gray-100">
                 <MapPin className="w-5 h-5 text-[#c9a96e] shrink-0" />
                 <div className="flex-1">
                   <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-400">
-                    Location
+                    City
                   </label>
                   <select
-                    value={selectedLocation}
-                    onChange={(e) => setSelectedLocation(e.target.value)}
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
                     className="w-full bg-transparent text-sm font-semibold text-gray-800 focus:outline-none cursor-pointer"
                   >
-                    <option value="">Enter city or area</option>
-                    {locations.map((loc) => (
-                      <option key={loc} value={loc}>
-                        {loc}
+                    <option value="">All Cities</option>
+                    {cityOptions.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
                       </option>
                     ))}
                   </select>
                 </div>
               </div>
 
-              {/* Property Type */}
-              <div className="flex-1 w-full flex items-center gap-3 px-4 py-2.5 sm:py-2 border-b sm:border-b-0 sm:border-r border-gray-100">
+              {/* Category */}
+              <div className="flex-1 w-full flex items-center gap-3 px-4 py-2.5 sm:py-2">
                 <Building2 className="w-5 h-5 text-[#c9a96e] shrink-0" />
                 <div className="flex-1">
                   <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-400">
-                    Property Type
+                    Category
                   </label>
                   <select
-                    value={selectedType}
-                    onChange={(e) => setSelectedType(e.target.value)}
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
                     className="w-full bg-transparent text-sm font-semibold text-gray-800 focus:outline-none cursor-pointer"
                   >
-                    <option value="">Any</option>
-                    {propertyTypes.map((type) => (
-                      <option key={type} value={type}>
-                        {type}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Budget */}
-              <div className="flex-1 w-full flex items-center gap-3 px-4 py-2.5 sm:py-2">
-                <span className="text-[#c9a96e] font-bold text-sm shrink-0">PKR</span>
-                <div className="flex-1">
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-400">
-                    Budget
-                  </label>
-                  <select
-                    value={selectedBudget}
-                    onChange={(e) => setSelectedBudget(e.target.value)}
-                    className="w-full bg-transparent text-sm font-semibold text-gray-800 focus:outline-none cursor-pointer"
-                  >
-                    <option value="">Any</option>
-                    {priceRanges.map((range) => (
-                      <option key={range.label} value={range.label}>
-                        {range.label}
+                    <option value="">All Categories</option>
+                    {propertyTypes.map((t) => (
+                      <option key={t} value={t}>
+                        {t}
                       </option>
                     ))}
                   </select>

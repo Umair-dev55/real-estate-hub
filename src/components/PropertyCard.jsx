@@ -96,21 +96,21 @@ export default function PropertyCard({ property }) {
           </div>
 
           {/* Features Row */}
-          <div className="flex items-center gap-4 pb-4 border-b border-gray-100 text-xs sm:text-sm">
+          <div className="flex items-center gap-2 pb-4 border-b border-gray-100 text-xs sm:text-sm">
             {property.bedrooms > 0 && (
-              <div className="flex items-center gap-1.5 text-gray-600">
-                <BedDouble className="w-4 h-4 text-gray-400" />
+              <div className="flex items-center gap-1 text-gray-600">
+                <BedDouble className="w-3 h-3 text-gray-400" />
                 <span>{property.bedrooms} Beds</span>
               </div>
             )}
             {property.bathrooms > 0 && (
-              <div className="flex items-center gap-1.5 text-gray-600">
-                <Bath className="w-4 h-4 text-gray-400" />
+              <div className="flex items-center gap-1 text-gray-600">
+                <Bath className="w-3 h-3 text-gray-400" />
                 <span>{property.bathrooms} Baths</span>
               </div>
             )}
-            <div className="flex items-center gap-1.5 text-gray-600">
-              <Maximize className="w-4 h-4 text-gray-400" />
+            <div className="flex items-center gap-1 text-gray-600">
+              <Maximize className="w-3 h-3 text-gray-400" />
               <span>{property.area}</span>
             </div>
           </div>
