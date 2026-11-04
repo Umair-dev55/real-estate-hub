@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
-import { Phone, Mail, MapPin } from 'lucide-react';
-import AnimatedSection from '@/components/AnimatedSection';
-import { companyInfo, footerLinks } from '@/data/data.js';
+import { Link } from "react-router-dom";
+import { Phone, Mail, MapPin } from "lucide-react";
+import AnimatedSection from "@/components/AnimatedSection";
+import { companyInfo, footerLinks } from "@/data/data.js";
 
 function FacebookIcon(props) {
   return (
@@ -44,11 +44,31 @@ function LinkedinIcon(props) {
 }
 
 const socialIcons = [
-  { icon: FacebookIcon, href: companyInfo.socialLinks.facebook, label: 'Facebook' },
-  { icon: InstagramIcon, href: companyInfo.socialLinks.instagram, label: 'Instagram' },
-  { icon: TwitterIcon, href: companyInfo.socialLinks.twitter, label: 'Twitter' },
-  { icon: YoutubeIcon, href: companyInfo.socialLinks.youtube, label: 'Youtube' },
-  { icon: LinkedinIcon, href: companyInfo.socialLinks.linkedin, label: 'LinkedIn' },
+  {
+    icon: FacebookIcon,
+    href: companyInfo.socialLinks.facebook,
+    label: "Facebook",
+  },
+  {
+    icon: InstagramIcon,
+    href: companyInfo.socialLinks.instagram,
+    label: "Instagram",
+  },
+  {
+    icon: TwitterIcon,
+    href: companyInfo.socialLinks.twitter,
+    label: "Twitter",
+  },
+  {
+    icon: YoutubeIcon,
+    href: companyInfo.socialLinks.youtube,
+    label: "Youtube",
+  },
+  {
+    icon: LinkedinIcon,
+    href: companyInfo.socialLinks.linkedin,
+    label: "LinkedIn",
+  },
 ];
 
 export default function Footer() {
@@ -129,7 +149,7 @@ export default function Footer() {
               ))}
             </ul>
 
-            <h3 className="font-serif text-lg font-semibold mt-8 mb-5 text-white">
+            {/* <h3 className="font-serif text-lg font-semibold mt-8 mb-5 text-white">
               Cities
             </h3>
             <ul className="space-y-3">
@@ -143,7 +163,7 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
-            </ul>
+            </ul> */}
           </AnimatedSection>
 
           {/* Contact Info */}
@@ -154,7 +174,7 @@ export default function Footer() {
             <ul className="space-y-4">
               <li>
                 <a
-                  href={`tel:${companyInfo.phone.replace(/\s+/g, '')}`}
+                  href={`tel:${companyInfo.phone.replace(/\s+/g, "")}`}
                   className="flex items-start gap-3 text-gray-400 text-sm hover:text-[#efc07a] transition-colors duration-300 group"
                 >
                   <Phone className="w-4 h-4 mt-0.5 text-[#efc07a] shrink-0" />
@@ -173,7 +193,7 @@ export default function Footer() {
               <li className="flex items-start gap-3 text-gray-400 text-sm">
                 <MapPin className="w-4 h-4 mt-0.5 text-[#efc07a] shrink-0" />
                 <span>
-                  {companyInfo.address.street}, {companyInfo.address.city},{' '}
+                  {companyInfo.address.street}, {companyInfo.address.city},{" "}
                   {companyInfo.address.province}
                 </span>
               </li>
