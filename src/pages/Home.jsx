@@ -9,7 +9,6 @@ import {
   ShieldCheck,
   Headphones,
   Heart,
-  TrendingUp,
   ArrowRight,
   Sparkles,
 } from "lucide-react";
@@ -20,8 +19,8 @@ import AnimatedSection, {
 import PropertyCard from "@/components/PropertyCard";
 import SectionHeading from "@/components/SectionHeading";
 import AnimatedCounter from "@/components/AnimatedCounter";
+import CustomSelect from "@/components/CustomSelect";
 import {
-  properties,
   getFeaturedProperties,
   trustIndicators,
   statistics,
@@ -29,7 +28,6 @@ import {
   citiesByCountry,
   propertyTypes,
 } from "@/data/data.js";
-import CustomSelect from "@/components/CustomSelect";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -59,32 +57,35 @@ export default function Home() {
   };
 
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-x-clip">
       {/* ========================================================
-          HERO SECTION (Matches Reference Image)
+          HERO SECTION
+          NOTE: `overflow-hidden` removed from <section> so dropdowns
+          are not clipped. Background clipping now lives on the
+          background wrapper below.
          ======================================================== */}
-      <section className="relative min-h-[92vh] sm:min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden">
-        {/* Hero Background Image with Parallax scale */}
-        <motion.div
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1.8, ease: "easeOut" }}
-          className="absolute inset-0 z-0"
-        >
-          <img
-            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&h=1080&fit=crop"
-            alt="Luxury Architecture Villa in Pakistan"
-            className="w-full h-full object-cover object-center"
-          />
-          {/* Dual Overlay: Dark navy gradient for elegance and high contrast */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0a1929]/90 via-[#102a43]/75 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a1929] via-transparent to-black/40" />
-        </motion.div>
+      <section className="relative min-h-[92vh] sm:min-h-screen flex items-center justify-center pt-24 pb-16">
+        {/* Hero Background (clipped here instead of on the section) */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <motion.div
+            initial={{ scale: 1.1 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 1.8, ease: "easeOut" }}
+            className="absolute inset-0"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&h=1080&fit=crop"
+              alt="Luxury Architecture Villa in Pakistan"
+              className="w-full h-full object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0a1929]/90 via-[#102a43]/75 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a1929] via-transparent to-black/40" />
+          </motion.div>
+        </div>
 
         {/* Hero Content */}
         <div className="container-custom relative z-10 w-full py-12 lg:py-20">
           <div className="max-w-2xl">
-            {/* Tagline */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -97,7 +98,6 @@ export default function Home() {
               </span>
             </motion.div>
 
-            {/* Main Heading */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -114,7 +114,6 @@ export default function Home() {
               </span>
             </motion.h1>
 
-            {/* Subtitle */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -127,12 +126,12 @@ export default function Home() {
             </motion.p>
           </div>
 
-          {/* Hero Floating Search Card (Exact Match to Design Reference) */}
+          {/* Hero Floating Search Card */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="w-full max-w-4xl bg-white/95 backdrop-blur-lg rounded-2xl sm:rounded-full p-3 sm:p-2.5 shadow-2xl border border-white/30"
+            className="relative z-20 w-full max-w-4xl bg-white/95 backdrop-blur-lg rounded-2xl sm:rounded-full p-3 sm:p-2.5 shadow-2xl border border-white/30"
           >
             <form
               onSubmit={handleHeroSearch}
@@ -141,68 +140,59 @@ export default function Home() {
               {/* Country */}
               <div className="flex-1 w-full flex items-center gap-3 px-4 py-2.5 sm:py-2 border-b sm:border-b-0 sm:border-r border-gray-100">
                 <Globe className="w-5 h-5 text-[#c9a96e] shrink-0" />
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-400">
                     Country
                   </label>
-                  <select
+                  <CustomSelect
+                    variant="bare"
                     value={country}
-                    onChange={(e) => {
-                      setCountry(e.target.value);
+                    onChange={(v) => {
+                      setCountry(v);
                       setCity("");
                     }}
-                    className="w-full bg-transparent text-sm font-semibold text-gray-800 focus:outline-none cursor-pointer"
-                  >
-                    {countries.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
+                    options={countries.map((c) => ({ value: c, label: c }))}
+                  />
                 </div>
               </div>
 
               {/* City */}
               <div className="flex-1 w-full flex items-center gap-3 px-4 py-2.5 sm:py-2 border-b sm:border-b-0 sm:border-r border-gray-100">
                 <MapPin className="w-5 h-5 text-[#c9a96e] shrink-0" />
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-400">
                     City
                   </label>
-                  <select
+                  <CustomSelect
+                    variant="bare"
                     value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    className="w-full bg-transparent text-sm font-semibold text-gray-800 focus:outline-none cursor-pointer"
-                  >
-                    <option value="">All Cities</option>
-                    {cityOptions.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={setCity}
+                    placeholder="All Cities"
+                    options={[
+                      { value: "", label: "All Cities" },
+                      ...cityOptions.map((c) => ({ value: c, label: c })),
+                    ]}
+                  />
                 </div>
               </div>
 
               {/* Category */}
               <div className="flex-1 w-full flex items-center gap-3 px-4 py-2.5 sm:py-2">
                 <Building2 className="w-5 h-5 text-[#c9a96e] shrink-0" />
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-400">
                     Category
                   </label>
-                  <select
+                  <CustomSelect
+                    variant="bare"
                     value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="w-full bg-transparent text-sm font-semibold text-gray-800 focus:outline-none cursor-pointer"
-                  >
-                    <option value="">All Categories</option>
-                    {propertyTypes.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={setCategory}
+                    placeholder="All Categories"
+                    options={[
+                      { value: "", label: "All Categories" },
+                      ...propertyTypes.map((t) => ({ value: t, label: t })),
+                    ]}
+                  />
                 </div>
               </div>
 
@@ -220,7 +210,7 @@ export default function Home() {
       </section>
 
       {/* ========================================================
-          TRUST INDICATORS SECTION (From Reference Image)
+          TRUST INDICATORS SECTION
          ======================================================== */}
       <section className="bg-white py-12 sm:py-16 border-b border-gray-100">
         <div className="container-custom">
@@ -289,12 +279,10 @@ export default function Home() {
 
       {/* ========================================================
           WHY CHOOSE US / COMPANY INTRODUCTION
-          (Matches Reference Image with Split Layout & Photo Script Tag)
          ======================================================== */}
       <section className="py-20 lg:py-28 bg-white">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
-            {/* Left Image with Script Badge */}
             <AnimatedSection
               variant="fadeRight"
               className="lg:col-span-6 relative"
@@ -307,7 +295,6 @@ export default function Home() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
-                {/* Script Tag from Reference Image: "More Than Just a Home" */}
                 <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md px-5 py-3 rounded-2xl shadow-lg border border-white/50 -rotate-3">
                   <span
                     style={{ fontFamily: "'Dancing Script', cursive" }}
@@ -319,7 +306,6 @@ export default function Home() {
               </div>
             </AnimatedSection>
 
-            {/* Right Content */}
             <AnimatedSection
               variant="fadeLeft"
               className="lg:col-span-6 flex flex-col justify-center"
@@ -338,7 +324,6 @@ export default function Home() {
                 advisors and market experts.
               </p>
 
-              {/* Statistics Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-gray-100">
                 {statistics.map((stat) => (
                   <div key={stat.id}>
@@ -370,7 +355,7 @@ export default function Home() {
       </section>
 
       {/* ========================================================
-          BOTTOM CTA SECTION (Matches Reference Image Banner)
+          BOTTOM CTA SECTION
          ======================================================== */}
       <section className="py-12 sm:py-16">
         <div className="container-custom">
@@ -378,7 +363,6 @@ export default function Home() {
             variant="scaleUp"
             className="relative rounded-3xl bg-gradient-to-r from-[#102a43] via-[#1b3a57] to-[#0a1929] overflow-hidden p-8 sm:p-12 lg:p-16 shadow-2xl"
           >
-            {/* Background Decorative Graphic */}
             <div className="absolute right-0 top-0 bottom-0 w-full lg:w-1/2 opacity-25 lg:opacity-60 pointer-events-none overflow-hidden">
               <img
                 src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1000&h=600&fit=crop"
