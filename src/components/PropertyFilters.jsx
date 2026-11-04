@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
-import { Search, RotateCcw, SlidersHorizontal, X, ChevronDown } from 'lucide-react';
+import { useMemo, useState } from "react";
+import { Search, RotateCcw, SlidersHorizontal, X } from "lucide-react";
+import CustomSelect from "@/components/CustomSelect";
 import {
   properties,
   countries,
@@ -9,27 +10,21 @@ import {
   priceSteps,
   bedroomOptions,
   sortOptions,
-} from '@/data/data.js';
-import { cn } from '@/lib/utils.js';
+} from "@/data/data.js";
+import { cn } from "@/lib/utils.js";
 
 const BEDS = bedroomOptions.filter((n) => n <= 6);
 
-const labelCls = 'block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5';
-const selectBase =
-  'w-full appearance-none pl-3.5 pr-9 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#c8922f]/60 focus:border-[#c8922f] disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed cursor-pointer transition';
-
+const labelCls =
+  "block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5";
 function Field({ label, children }) {
   return (
     <div>
       <label className={labelCls}>{label}</label>
-      <div className="relative">
-        {children}
-        <ChevronDown className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-      </div>
+      {children}
     </div>
   );
 }
-
 export default function PropertyFilters({
   filters,
   onFilterChange,
@@ -42,7 +37,8 @@ export default function PropertyFilters({
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const cityOptions = citiesByCountry[filters.country] || Object.values(citiesByCountry).flat();
+  const cityOptions =
+    citiesByCountry[filters.country] || Object.values(citiesByCountry).flat();
   const localities = filters.city ? getLocalitiesByCity(filters.city) : [];
   const steps = priceSteps[filters.purpose] || [];
 
@@ -61,15 +57,56 @@ export default function PropertyFilters({
 
   // Active filter chips
   const chips = [];
-  if (filters.country) chips.push({ k: 'country', label: filters.country, clear: { country: '', city: '', location: '' } });
-  if (filters.city) chips.push({ k: 'city', label: filters.city, clear: { city: '', location: '' } });
-  if (filters.location) chips.push({ k: 'location', label: filters.location, clear: { location: '' } });
-  if (filters.type) chips.push({ k: 'type', label: filters.type, clear: { type: '' } });
-  if (filters.purpose) chips.push({ k: 'purpose', label: filters.purpose === 'Buy' ? 'For Sale' : 'For Rent', clear: { purpose: '', minPrice: '', maxPrice: '' } });
-  if (filters.minPrice) chips.push({ k: 'min', label: `Min ${steps.find((s) => String(s.value) === String(filters.minPrice))?.label || filters.minPrice}`, clear: { minPrice: '' } });
-  if (filters.maxPrice) chips.push({ k: 'max', label: `Max ${steps.find((s) => String(s.value) === String(filters.maxPrice))?.label || filters.maxPrice}`, clear: { maxPrice: '' } });
-  if (filters.bedrooms) chips.push({ k: 'beds', label: `${filters.bedrooms}+ Beds`, clear: { bedrooms: '' } });
-  if (filters.search) chips.push({ k: 'search', label: `“${filters.search}”`, clear: { search: '' } });
+  if (filters.country)
+    chips.push({
+      k: "country",
+      label: filters.country,
+      clear: { country: "", city: "", location: "" },
+    });
+  if (filters.city)
+    chips.push({
+      k: "city",
+      label: filters.city,
+      clear: { city: "", location: "" },
+    });
+  if (filters.location)
+    chips.push({
+      k: "location",
+      label: filters.location,
+      clear: { location: "" },
+    });
+  if (filters.type)
+    chips.push({ k: "type", label: filters.type, clear: { type: "" } });
+  if (filters.purpose)
+    chips.push({
+      k: "purpose",
+      label: filters.purpose === "Buy" ? "For Sale" : "For Rent",
+      clear: { purpose: "", minPrice: "", maxPrice: "" },
+    });
+  if (filters.minPrice)
+    chips.push({
+      k: "min",
+      label: `Min ${steps.find((s) => String(s.value) === String(filters.minPrice))?.label || filters.minPrice}`,
+      clear: { minPrice: "" },
+    });
+  if (filters.maxPrice)
+    chips.push({
+      k: "max",
+      label: `Max ${steps.find((s) => String(s.value) === String(filters.maxPrice))?.label || filters.maxPrice}`,
+      clear: { maxPrice: "" },
+    });
+  if (filters.bedrooms)
+    chips.push({
+      k: "beds",
+      label: `${filters.bedrooms}+ Beds`,
+      clear: { bedrooms: "" },
+    });
+  if (filters.search)
+    chips.push({
+      k: "search",
+      label: `“${filters.search}”`,
+      clear: { search: "" },
+    });
 
   const panel = (
     <div className="space-y-5">
@@ -78,19 +115,19 @@ export default function PropertyFilters({
         <label className={labelCls}>I want to</label>
         <div className="grid grid-cols-3 bg-gray-100 rounded-xl p-1 gap-1">
           {[
-            { v: '', l: 'All' },
-            { v: 'Buy', l: 'Buy' },
-            { v: 'Rent', l: 'Rent' },
+            { v: "", l: "All" },
+            { v: "Buy", l: "Buy" },
+            { v: "Rent", l: "Rent" },
           ].map((o) => (
             <button
               key={o.v}
               type="button"
-              onClick={() => set({ purpose: o.v, minPrice: '', maxPrice: '' })}
+              onClick={() => set({ purpose: o.v, minPrice: "", maxPrice: "" })}
               className={cn(
-                'py-2 text-sm font-semibold rounded-lg transition cursor-pointer',
+                "py-2 text-sm font-semibold rounded-lg transition cursor-pointer",
                 filters.purpose === o.v
-                  ? 'bg-[#102a43] text-white shadow'
-                  : 'text-gray-600 hover:text-[#102a43]'
+                  ? "bg-[#102a43] text-white shadow"
+                  : "text-gray-600 hover:text-[#102a43]",
               )}
             >
               {o.l}
@@ -102,43 +139,51 @@ export default function PropertyFilters({
       {/* Location: Country > City > Area */}
       <div className="grid grid-cols-1 gap-3.5">
         <Field label="Country">
-          <select
+          <CustomSelect
             value={filters.country}
-            onChange={(e) => set({ country: e.target.value, city: '', location: '' })}
-            className={selectBase}
-          >
-            <option value="">All Countries</option>
-            {countries.map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
+            onChange={(v) => set({ country: v, city: "", location: "" })}
+            placeholder="All Countries"
+            options={[
+              { value: "", label: "All Countries" },
+              ...countries.map((c) => ({ value: c, label: c })),
+            ]}
+          />
         </Field>
         <Field label="City">
-          <select
+          <CustomSelect
             value={filters.city}
-            onChange={(e) => set({ city: e.target.value, location: '' })}
-            className={selectBase}
-          >
-            <option value="">All Cities</option>
-            {cityOptions.map((c) => (
-              <option key={c} value={c}>
-                {c} ({countBy.city[c] || 0})
-              </option>
-            ))}
-          </select>
+            onChange={(v) => set({ city: v, location: "" })}
+            placeholder="All Cities"
+            options={[
+              { value: "", label: "All Cities" },
+              ...cityOptions.map((c) => ({
+                value: c,
+                label: c,
+                count: countBy.city[c] || 0,
+              })),
+            ]}
+          />
         </Field>
         <Field label="Area / Locality">
-          <select
+          <CustomSelect
             value={filters.location}
-            onChange={(e) => set({ location: e.target.value })}
+            onChange={(v) => set({ location: v })}
             disabled={!filters.city}
-            className={selectBase}
-          >
-            <option value="">{filters.city ? `All areas in ${filters.city}` : 'Select a city first'}</option>
-            {localities.map((l) => (
-              <option key={l} value={l}>{l}</option>
-            ))}
-          </select>
+            placeholder={
+              filters.city
+                ? `All areas in ${filters.city}`
+                : "Select a city first"
+            }
+            options={[
+              {
+                value: "",
+                label: filters.city
+                  ? `All areas in ${filters.city}`
+                  : "Select a city first",
+              },
+              ...localities.map((l) => ({ value: l, label: l })),
+            ]}
+          />
         </Field>
       </div>
 
@@ -148,10 +193,12 @@ export default function PropertyFilters({
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            onClick={() => set({ type: '' })}
+            onClick={() => set({ type: "" })}
             className={cn(
-              'px-3 py-1.5 rounded-full text-xs font-semibold border transition cursor-pointer',
-              !filters.type ? 'bg-[#c8922f] border-[#c8922f] text-white' : 'bg-white border-gray-200 text-gray-600 hover:border-[#c8922f] hover:text-[#c8922f]'
+              "px-3 py-1.5 rounded-full text-xs font-semibold border transition cursor-pointer",
+              !filters.type
+                ? "bg-[#c8922f] border-[#c8922f] text-white"
+                : "bg-white border-gray-200 text-gray-600 hover:border-[#c8922f] hover:text-[#c8922f]",
             )}
           >
             All
@@ -160,10 +207,12 @@ export default function PropertyFilters({
             <button
               key={t}
               type="button"
-              onClick={() => set({ type: filters.type === t ? '' : t })}
+              onClick={() => set({ type: filters.type === t ? "" : t })}
               className={cn(
-                'px-3 py-1.5 rounded-full text-xs font-semibold border transition cursor-pointer',
-                filters.type === t ? 'bg-[#c8922f] border-[#c8922f] text-white' : 'bg-white border-gray-200 text-gray-600 hover:border-[#c8922f] hover:text-[#c8922f]'
+                "px-3 py-1.5 rounded-full text-xs font-semibold border transition cursor-pointer",
+                filters.type === t
+                  ? "bg-[#c8922f] border-[#c8922f] text-white"
+                  : "bg-white border-gray-200 text-gray-600 hover:border-[#c8922f] hover:text-[#c8922f]",
               )}
             >
               {t} <span className="opacity-60">{countBy.type[t] || 0}</span>
@@ -175,40 +224,38 @@ export default function PropertyFilters({
       {/* Price */}
       <div>
         <label className={labelCls}>
-          Price (PKR{filters.purpose === 'Rent' ? ' / month' : ''})
+          Price (PKR{filters.purpose === "Rent" ? " / month" : ""})
         </label>
         {filters.purpose ? (
           <div className="grid grid-cols-2 gap-3">
-            <div className="relative">
-              <select
-                value={filters.minPrice}
-                onChange={(e) => set({ minPrice: e.target.value })}
-                className={selectBase}
-              >
-                <option value="">Min</option>
-                {steps
-                  .filter((s) => !filters.maxPrice || s.value < Number(filters.maxPrice))
-                  .map((s) => (
-                    <option key={s.value} value={s.value}>{s.label}</option>
-                  ))}
-              </select>
-              <ChevronDown className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-            </div>
-            <div className="relative">
-              <select
-                value={filters.maxPrice}
-                onChange={(e) => set({ maxPrice: e.target.value })}
-                className={selectBase}
-              >
-                <option value="">Max</option>
-                {steps
-                  .filter((s) => !filters.minPrice || s.value > Number(filters.minPrice))
-                  .map((s) => (
-                    <option key={s.value} value={s.value}>{s.label}</option>
-                  ))}
-              </select>
-              <ChevronDown className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-            </div>
+            <CustomSelect
+              value={filters.minPrice}
+              onChange={(v) => set({ minPrice: v })}
+              placeholder="Min"
+              options={[
+                { value: "", label: "Min" },
+                ...steps
+                  .filter(
+                    (s) =>
+                      !filters.maxPrice || s.value < Number(filters.maxPrice),
+                  )
+                  .map((s) => ({ value: s.value, label: s.label })),
+              ]}
+            />
+            <CustomSelect
+              value={filters.maxPrice}
+              onChange={(v) => set({ maxPrice: v })}
+              placeholder="Max"
+              options={[
+                { value: "", label: "Max" },
+                ...steps
+                  .filter(
+                    (s) =>
+                      !filters.minPrice || s.value > Number(filters.minPrice),
+                  )
+                  .map((s) => ({ value: s.value, label: s.label })),
+              ]}
+            />
           </div>
         ) : (
           <p className="text-xs text-gray-400 bg-gray-50 border border-dashed border-gray-200 rounded-xl px-3.5 py-2.5">
@@ -223,10 +270,12 @@ export default function PropertyFilters({
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            onClick={() => set({ bedrooms: '' })}
+            onClick={() => set({ bedrooms: "" })}
             className={cn(
-              'min-w-10 px-3 py-1.5 rounded-lg text-xs font-semibold border transition cursor-pointer',
-              !filters.bedrooms ? 'bg-[#102a43] border-[#102a43] text-white' : 'bg-white border-gray-200 text-gray-600 hover:border-[#102a43]'
+              "min-w-10 px-3 py-1.5 rounded-lg text-xs font-semibold border transition cursor-pointer",
+              !filters.bedrooms
+                ? "bg-[#102a43] border-[#102a43] text-white"
+                : "bg-white border-gray-200 text-gray-600 hover:border-[#102a43]",
             )}
           >
             Any
@@ -235,10 +284,17 @@ export default function PropertyFilters({
             <button
               key={n}
               type="button"
-              onClick={() => set({ bedrooms: String(filters.bedrooms) === String(n) ? '' : String(n) })}
+              onClick={() =>
+                set({
+                  bedrooms:
+                    String(filters.bedrooms) === String(n) ? "" : String(n),
+                })
+              }
               className={cn(
-                'min-w-10 px-3 py-1.5 rounded-lg text-xs font-semibold border transition cursor-pointer',
-                String(filters.bedrooms) === String(n) ? 'bg-[#102a43] border-[#102a43] text-white' : 'bg-white border-gray-200 text-gray-600 hover:border-[#102a43]'
+                "min-w-10 px-3 py-1.5 rounded-lg text-xs font-semibold border transition cursor-pointer",
+                String(filters.bedrooms) === String(n)
+                  ? "bg-[#102a43] border-[#102a43] text-white"
+                  : "bg-white border-gray-200 text-gray-600 hover:border-[#102a43]",
               )}
             >
               {n}+
@@ -258,7 +314,11 @@ export default function PropertyFilters({
             <SlidersHorizontal className="w-4 h-4 text-[#c8922f]" /> Filters
           </h2>
           {chips.length > 0 && (
-            <button type="button" onClick={onReset} className="text-xs font-semibold text-[#c8922f] hover:underline cursor-pointer">
+            <button
+              type="button"
+              onClick={onReset}
+              className="text-xs font-semibold text-[#c8922f] hover:underline cursor-pointer"
+            >
               Reset
             </button>
           )}
@@ -267,94 +327,94 @@ export default function PropertyFilters({
       </aside>
 
       <div className="min-w-0">
-      {/* Top bar: search + sort (always visible) */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col md:flex-row gap-3 md:items-center">
-        <div className="relative flex-1">
-          <Search className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
-          <input
-            type="text"
-            placeholder="Search by title, area, city or keyword..."
-            value={filters.search}
-            onChange={(e) => onFilterChange('search', e.target.value)}
-            className="w-full pl-12 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#c8922f]/60 focus:border-[#c8922f] transition"
-          />
-          {filters.search && (
+        {/* Top bar: search + sort (always visible) */}
+        <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col md:flex-row gap-3 md:items-center">
+          <div className="relative flex-1">
+            <Search className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search by title, area, city or keyword..."
+              value={filters.search}
+              onChange={(e) => onFilterChange("search", e.target.value)}
+              className="w-full pl-12 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#c8922f]/60 focus:border-[#c8922f] transition"
+            />
+            {filters.search && (
+              <button
+                type="button"
+                onClick={() => set({ search: "" })}
+                aria-label="Clear search"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => set({ search: '' })}
-              aria-label="Clear search"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 cursor-pointer"
+              onClick={() => setMobileOpen((v) => !v)}
+              className="lg:hidden inline-flex items-center gap-2 px-4 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-700 hover:border-[#c8922f] cursor-pointer"
             >
-              <X className="w-4 h-4" />
+              <SlidersHorizontal className="w-4 h-4" />
+              Filters
+              {chips.length > 0 && (
+                <span className="bg-[#c8922f] text-white text-[10px] rounded-full w-5 h-5 inline-flex items-center justify-center">
+                  {chips.length}
+                </span>
+              )}
+            </button>
+            <div className="relative flex-1 md:flex-none">
+              <CustomSelect
+                className="flex-1 md:flex-none md:w-52"
+                align="right"
+                value={sortBy}
+                onChange={onSortChange}
+                options={sortOptions.map((o) => ({
+                  value: o.value,
+                  label: o.label,
+                }))}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Active chips + count */}
+        <div className="flex flex-wrap items-center gap-2 mt-4">
+          <span className="text-sm text-gray-500 mr-1">
+            <strong className="text-[#102a43]">{totalResults}</strong>{" "}
+            {totalResults === 1 ? "property" : "properties"} found
+          </span>
+          {chips.map((c) => (
+            <button
+              key={c.k}
+              type="button"
+              onClick={() => set(c.clear)}
+              className="inline-flex items-center gap-1.5 pl-3 pr-2 py-1 rounded-full bg-[#102a43]/5 hover:bg-[#102a43]/10 text-xs font-semibold text-[#102a43] transition cursor-pointer"
+            >
+              {c.label}
+              <X className="w-3.5 h-3.5" />
+            </button>
+          ))}
+          {chips.length > 0 && (
+            <button
+              type="button"
+              onClick={onReset}
+              className="inline-flex items-center gap-1 text-xs font-semibold text-[#c8922f] hover:underline cursor-pointer ml-1"
+            >
+              <RotateCcw className="w-3.5 h-3.5" /> Clear all
             </button>
           )}
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setMobileOpen((v) => !v)}
-            className="lg:hidden inline-flex items-center gap-2 px-4 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-700 hover:border-[#c8922f] cursor-pointer"
-          >
-            <SlidersHorizontal className="w-4 h-4" />
-            Filters
-            {chips.length > 0 && (
-              <span className="bg-[#c8922f] text-white text-[10px] rounded-full w-5 h-5 inline-flex items-center justify-center">
-                {chips.length}
-              </span>
-            )}
-          </button>
-          <div className="relative flex-1 md:flex-none">
-            <select
-              value={sortBy}
-              onChange={(e) => onSortChange(e.target.value)}
-              className="w-full md:w-52 appearance-none pl-3.5 pr-9 py-3 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#c8922f]/60 cursor-pointer"
-            >
-              {sortOptions.map((o) => (
-                <option key={o.value} value={o.value}>{o.label}</option>
-              ))}
-            </select>
-            <ChevronDown className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+        {/* Mobile filter panel */}
+        {mobileOpen && (
+          <div className="lg:hidden mt-4 bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+            {panel}
           </div>
-        </div>
-      </div>
-
-      {/* Active chips + count */}
-      <div className="flex flex-wrap items-center gap-2 mt-4">
-        <span className="text-sm text-gray-500 mr-1">
-          <strong className="text-[#102a43]">{totalResults}</strong>{' '}
-          {totalResults === 1 ? 'property' : 'properties'} found
-        </span>
-        {chips.map((c) => (
-          <button
-            key={c.k}
-            type="button"
-            onClick={() => set(c.clear)}
-            className="inline-flex items-center gap-1.5 pl-3 pr-2 py-1 rounded-full bg-[#102a43]/5 hover:bg-[#102a43]/10 text-xs font-semibold text-[#102a43] transition cursor-pointer"
-          >
-            {c.label}
-            <X className="w-3.5 h-3.5" />
-          </button>
-        ))}
-        {chips.length > 0 && (
-          <button
-            type="button"
-            onClick={onReset}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-[#c8922f] hover:underline cursor-pointer ml-1"
-          >
-            <RotateCcw className="w-3.5 h-3.5" /> Clear all
-          </button>
         )}
-      </div>
 
-      {/* Mobile filter panel */}
-      {mobileOpen && (
-        <div className="lg:hidden mt-4 bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-          {panel}
-        </div>
-      )}
-
-      <div className="mt-6">{children}</div>
+        <div className="mt-6">{children}</div>
       </div>
     </div>
   );

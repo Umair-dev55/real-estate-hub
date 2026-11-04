@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { motion } from 'motion/react';
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { motion } from "motion/react";
 import {
   Search,
   Globe,
@@ -12,11 +12,14 @@ import {
   TrendingUp,
   ArrowRight,
   Sparkles,
-} from 'lucide-react';
-import AnimatedSection, { StaggerContainer, StaggerItem } from '@/components/AnimatedSection';
-import PropertyCard from '@/components/PropertyCard';
-import SectionHeading from '@/components/SectionHeading';
-import AnimatedCounter from '@/components/AnimatedCounter';
+} from "lucide-react";
+import AnimatedSection, {
+  StaggerContainer,
+  StaggerItem,
+} from "@/components/AnimatedSection";
+import PropertyCard from "@/components/PropertyCard";
+import SectionHeading from "@/components/SectionHeading";
+import AnimatedCounter from "@/components/AnimatedCounter";
 import {
   properties,
   getFeaturedProperties,
@@ -25,28 +28,28 @@ import {
   countries,
   citiesByCountry,
   propertyTypes,
-} from '@/data/data.js';
+} from "@/data/data.js";
+import CustomSelect from "@/components/CustomSelect";
 
 export default function Home() {
   const navigate = useNavigate();
   const featured = getFeaturedProperties();
 
   // Hero search bar states: Country -> City -> Category
-  const [country, setCountry] = useState(countries[0] || '');
-  const [city, setCity] = useState('');
-  const [category, setCategory] = useState('');
+  const [country, setCountry] = useState(countries[0] || "");
+  const [city, setCity] = useState("");
+  const [category, setCategory] = useState("");
 
   const cityOptions = citiesByCountry[country] || [];
 
   const handleHeroSearch = (e) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (country) params.set('country', country);
-    if (city) params.set('city', city);
-    if (category) params.set('type', category);
+    if (country) params.set("country", country);
+    if (city) params.set("city", city);
+    if (category) params.set("type", category);
     navigate(`/properties?${params.toString()}`);
   };
-
 
   const trustIconMap = {
     Building2: Building2,
@@ -65,7 +68,7 @@ export default function Home() {
         <motion.div
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
-          transition={{ duration: 1.8, ease: 'easeOut' }}
+          transition={{ duration: 1.8, ease: "easeOut" }}
           className="absolute inset-0 z-0"
         >
           <img
@@ -118,8 +121,9 @@ export default function Home() {
               transition={{ duration: 0.6, delay: 0.5 }}
               className="text-base sm:text-lg text-gray-200 max-w-xl font-normal leading-relaxed mb-8 sm:mb-10"
             >
-              Discover bespoke modern homes, prime Pakistani addresses, and lifestyle-driven
-              communities across Lahore, Islamabad, and Karachi.
+              Discover bespoke modern homes, prime Pakistani addresses, and
+              lifestyle-driven communities across Lahore, Islamabad, and
+              Karachi.
             </motion.p>
           </div>
 
@@ -145,7 +149,7 @@ export default function Home() {
                     value={country}
                     onChange={(e) => {
                       setCountry(e.target.value);
-                      setCity('');
+                      setCity("");
                     }}
                     className="w-full bg-transparent text-sm font-semibold text-gray-800 focus:outline-none cursor-pointer"
                   >
@@ -328,9 +332,10 @@ export default function Home() {
                 We Build Futures.
               </h2>
               <p className="text-base text-gray-600 leading-relaxed mb-8">
-                Whether you’re buying, selling, or renting, we make the process simple,
-                transparent, and stress-free. Your dream home is closer than you think, backed by
-                our team of certified property legal advisors and market experts.
+                Whether you’re buying, selling, or renting, we make the process
+                simple, transparent, and stress-free. Your dream home is closer
+                than you think, backed by our team of certified property legal
+                advisors and market experts.
               </p>
 
               {/* Statistics Grid */}
@@ -338,7 +343,10 @@ export default function Home() {
                 {statistics.map((stat) => (
                   <div key={stat.id}>
                     <div className="font-serif text-2xl sm:text-3xl font-bold text-[#102a43] flex items-center">
-                      <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                      <AnimatedCounter
+                        value={stat.value}
+                        suffix={stat.suffix}
+                      />
                     </div>
                     <p className="text-xs text-gray-500 font-medium mt-1">
                       {stat.label}
@@ -388,8 +396,8 @@ export default function Home() {
                 Let’s Make It Happen
               </h2>
               <p className="text-sm sm:text-base text-gray-300 leading-relaxed mb-8">
-                Explore the best properties, get expert advice, and take the next step towards
-                your dream home today.
+                Explore the best properties, get expert advice, and take the
+                next step towards your dream home today.
               </p>
 
               <Link
@@ -406,4 +414,3 @@ export default function Home() {
     </div>
   );
 }
-
