@@ -74,7 +74,7 @@ export default function Home() {
             className="absolute inset-0"
           >
             <img
-              src="https://ik.imagekit.io/x9svten4i/Real%20Estate/Zameen%20Elite%20_%20Premium%20Real%20Estate%20in%20Pakistan/imgi_5_photo-1600596542815-ffad4c1539a9.-"
+              src="https://ik.imagekit.io/x9svten4i/Real%20Estate/Zameen%20Elite%20_%20Premium%20Real%20Estate%20in%20Pakistan/Home/imgi_3_photo-1600596542815-ffad4c1539a9.webp?updatedAt=1794781604090"
               alt="Luxury Architecture Villa in Pakistan"
               className="w-full h-full object-cover object-center"
             />
@@ -289,7 +289,7 @@ export default function Home() {
             >
               <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] bg-gray-100">
                 <img
-                  src="https://ik.imagekit.io/x9svten4i/Real%20Estate/Zameen%20Elite%20_%20Premium%20Real%20Estate%20in%20Pakistan/imgi_8_photo-1600607687939-ce8a6c25118c.-"
+                  src="https://ik.imagekit.io/x9svten4i/Real%20Estate/Zameen%20Elite%20_%20Premium%20Real%20Estate%20in%20Pakistan/Home/imgi_4_photo-1600607687939-ce8a6c25118c.webp?updatedAt=1794781603938"
                   alt="Modern Luxury Living Room interior in Pakistan"
                   className="w-full h-full object-cover"
                 />
@@ -365,7 +365,7 @@ export default function Home() {
           >
             <div className="absolute right-0 top-0 bottom-0 w-full lg:w-1/2 opacity-25 lg:opacity-60 pointer-events-none overflow-hidden">
               <img
-                src="https://ik.imagekit.io/x9svten4i/Real%20Estate/Zameen%20Elite%20_%20Premium%20Real%20Estate%20in%20Pakistan/imgi_7_photo-1564013799919-ab600027ffc6.jpg"
+                src="https://ik.imagekit.io/x9svten4i/Real%20Estate/Zameen%20Elite%20_%20Premium%20Real%20Estate%20in%20Pakistan/Home/imgi_7_photo-1564013799919-ab600027ffc6.webp?updatedAt=1794781604514"
                 alt="Architecture"
                 className="w-full h-full object-cover object-right"
               />
