@@ -383,10 +383,10 @@ export const properties = [
       'Rooftop Terrace',
     ],
     images: [
-      'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop',
-      'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&h=600&fit=crop',
+      'https://ik.imagekit.io/x9svten4i/Real%20Estate/Zameen%20Elite%20_%20Premium%20Real%20Estate%20in%20Pakistan/property1/imgi_1_photo-1613490493576-7fde63acd811.webp',
+      'https://ik.imagekit.io/x9svten4i/Real%20Estate/Zameen%20Elite%20_%20Premium%20Real%20Estate%20in%20Pakistan/Home/imgi_3_photo-1600596542815-ffad4c1539a9.webp?updatedAt=1794781604090',
+      'https://ik.imagekit.io/x9svten4i/Real%20Estate/Zameen%20Elite%20_%20Premium%20Real%20Estate%20in%20Pakistan/property1/imgi_3_photo-1600607687939-ce8a6c25118c.webp?updatedAt=1794782175950',
+      'https://ik.imagekit.io/x9svten4i/Real%20Estate/Zameen%20Elite%20_%20Premium%20Real%20Estate%20in%20Pakistan/property1/imgi_4_photo-1600566753190-17f0baa2a6c3.webp?updatedAt=1794782175974',
     ],
     agent: 1,
   },
@@ -827,7 +827,7 @@ export const properties = [
       'Walk-in Closet',
     ],
     images: [
-      'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop',
+      'https://ik.imagekit.io/x9svten4i/Real%20Estate/Zameen%20Elite%20_%20Premium%20Real%20Estate%20in%20Pakistan/property1/imgi_1_photo-1613490493576-7fde63acd811.webp',
       'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop',
       'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&h=600&fit=crop',
       'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop',
