@@ -1,19 +1,15 @@
 import { Link } from 'react-router-dom';
-import { motion } from 'motion/react';
 import {
   Award,
   CheckCircle2,
-  Users,
-  Building2,
-  ShieldCheck,
   Star,
   Quote,
   ArrowRight,
-  TrendingUp,
 } from 'lucide-react';
 import AnimatedSection, { StaggerContainer, StaggerItem } from '@/components/AnimatedSection';
 import SectionHeading from '@/components/SectionHeading';
 import AnimatedCounter from '@/components/AnimatedCounter';
+import LazyImage from '@/components/LazyImage';
 import {
   companyInfo,
   teamMembers,
@@ -55,9 +51,12 @@ export default function About() {
             {/* Visuals on Left */}
             <AnimatedSection variant="fadeRight" className="lg:col-span-6 relative">
               <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                <img
+                <LazyImage
                   src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&h=700&fit=crop"
                   alt="Zameen Elite Architectural Heritage"
+                  width={900}
+                  height={700}
+                  wrapperClassName="aspect-[9/7]"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -196,7 +195,7 @@ export default function About() {
                 className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300"
               >
                 <div className="relative aspect-square overflow-hidden bg-gray-100">
-                  <img
+                  <LazyImage
                     src={member.image}
                     alt={member.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -253,10 +252,11 @@ export default function About() {
                 </div>
 
                 <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                  <img
+                  <LazyImage
                     src={t.image}
                     alt={t.name}
-                    className="w-11 h-11 rounded-full object-cover shadow"
+                    wrapperClassName="w-11 h-11 rounded-full shadow shrink-0"
+                    className="w-full h-full object-cover"
                   />
                   <div>
                     <h4 className="font-serif text-sm font-bold text-[#102a43]">

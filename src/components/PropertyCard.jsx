@@ -1,12 +1,14 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Heart, MapPin, BedDouble, Bath, Maximize, ArrowRight } from 'lucide-react';
 import { formatPrice } from '@/data/data.js';
 import { cn } from '@/lib/utils.js';
+import LazyImage from '@/components/LazyImage';
+import { useFavorites } from '@/lib/useFavorites.js';
 
 export default function PropertyCard({ property }) {
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { isFavorite: checkFavorite, toggle } = useFavorites();
+  const isFavorite = checkFavorite(property.id);
 
   const purposeColor =
     property.purpose === 'Rent'
@@ -24,12 +26,12 @@ export default function PropertyCard({ property }) {
       {/* Image Container with Link */}
       <div className="relative overflow-hidden aspect-[4/3] bg-gray-100">
         <Link to={detailUrl} className="block w-full h-full">
-          <motion.img
+          <LazyImage
             src={property.images?.[0]}
             alt={property.title}
-            className="w-full h-full object-cover"
-            whileHover={{ scale: 1.08 }}
-            transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+            width={800}
+            height={600}
+            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           />
         </Link>
 
@@ -58,7 +60,7 @@ export default function PropertyCard({ property }) {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            setIsFavorite(!isFavorite);
+            toggle(property.id);
           }}
           aria-label={isFavorite ? 'Remove from favorites' : 'Save to favorites'}
           className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md hover:bg-white transition-all duration-300 cursor-pointer"

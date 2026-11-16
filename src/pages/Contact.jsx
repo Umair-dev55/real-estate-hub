@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { motion } from 'motion/react';
 import {
   Phone,
   Mail,
@@ -8,11 +7,9 @@ import {
   Send,
   MessageCircle,
   CheckCircle2,
-  Building2,
-  Sparkles,
 } from 'lucide-react';
-import AnimatedSection, { StaggerContainer, StaggerItem } from '@/components/AnimatedSection';
-import SectionHeading from '@/components/SectionHeading';
+import AnimatedSection from '@/components/AnimatedSection';
+import { submitForm } from '@/lib/submitForm.js';
 import { companyInfo } from '@/data/data.js';
 
 export default function Contact() {
@@ -25,9 +22,32 @@ export default function Contact() {
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (sending) return;
+    setError('');
+
+    // Honeypot: bots fill hidden fields. Pretend success, send nothing.
+    const isBot = Boolean(e.currentTarget.elements.namedItem('_gotcha')?.value);
+    if (!isBot) {
+      setSending(true);
+      try {
+        await submitForm({
+          form: 'contact-page',
+          _subject: `Website inquiry: ${formData.subject}`,
+          ...formData,
+        });
+      } catch (err) {
+        setError(err.message);
+        setSending(false);
+        return;
+      }
+      setSending(false);
+    }
+
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
@@ -161,6 +181,14 @@ export default function Contact() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
+                <input
+                  type="text"
+                  name="_gotcha"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0 }}
+                />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-gray-700 mb-1">
@@ -237,12 +265,19 @@ export default function Contact() {
                   />
                 </div>
 
+                {error && (
+                  <p role="alert" className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3.5 py-2.5">
+                    {error}
+                  </p>
+                )}
+
                 <button
                   type="submit"
-                  className="w-full py-4 bg-[#102a43] hover:bg-[#243b53] text-white font-semibold text-sm rounded-xl shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2 cursor-pointer"
+                  disabled={sending}
+                  className="w-full py-4 bg-[#102a43] hover:bg-[#243b53] text-white font-semibold text-sm rounded-xl shadow-lg hover:shadow-xl transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <Send className="w-4 h-4 text-[#efc07a]" />
-                  <span>Submit Inquiry</span>
+                  <span>{sending ? 'Sending...' : 'Submit Inquiry'}</span>
                 </button>
               </form>
             )}

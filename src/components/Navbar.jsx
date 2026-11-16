@@ -110,7 +110,7 @@ export default function Navbar() {
           {/* Desktop Right Actions */}
           <div className="hidden lg:flex items-center gap-3">
             <Link
-              to="/properties"
+              to="/properties?saved=1"
               title="Saved Properties"
               className={cn(
                 'p-2 rounded-xl transition-all duration-300',

@@ -3,6 +3,8 @@ import { Search, RotateCcw, SlidersHorizontal, X } from "lucide-react";
 import CustomSelect from "@/components/CustomSelect";
 import {
   properties,
+  filterProperties,
+  noBedroomTypes,
   countries,
   citiesByCountry,
   getLocalitiesByCity,
@@ -13,7 +15,8 @@ import {
 } from "@/data/data.js";
 import { cn } from "@/lib/utils.js";
 
-const BEDS = bedroomOptions.filter((n) => n <= 6);
+const BEDS = bedroomOptions.filter((n) => n <= 8);
+const localityOf = (p) => p.location.split(",")[0].trim();
 
 const labelCls =
   "block text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5";
@@ -37,21 +40,36 @@ export default function PropertyFilters({
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const cityOptions =
+  // Only offer cities / areas that actually have listings
+  const baseCities =
     citiesByCountry[filters.country] || Object.values(citiesByCountry).flat();
-  const localities = filters.city ? getLocalitiesByCity(filters.city) : [];
+  const cityOptions = baseCities.filter((c) =>
+    properties.some((p) => p.city === c),
+  );
+  const localities = filters.city
+    ? getLocalitiesByCity(filters.city).filter((l) =>
+        properties.some((p) => p.city === filters.city && localityOf(p) === l),
+      )
+    : [];
+  const hideBeds = noBedroomTypes.includes(filters.type);
   const steps = priceSteps[filters.purpose] || [];
 
-  // Listing counts shown next to options (based on the other active filters would be
-  // heavier; simple global counts are enough and cheap)
-  const countBy = useMemo(() => {
-    const c = { type: {}, city: {} };
-    properties.forEach((p) => {
-      c.type[p.type] = (c.type[p.type] || 0) + 1;
-      c.city[p.city] = (c.city[p.city] || 0) + 1;
-    });
-    return c;
-  }, []);
+  // Contextual counts: each count ignores its own filter but respects all others
+  const counts = useMemo(() => {
+    const tally = (patch, keyOf) => {
+      const c = {};
+      filterProperties({ ...filters, ...patch }).forEach((p) => {
+        const k = keyOf(p);
+        c[k] = (c[k] || 0) + 1;
+      });
+      return c;
+    };
+    return {
+      type: tally({ type: "" }, (p) => p.type),
+      city: tally({ city: "", location: "" }, (p) => p.city),
+      locality: tally({ location: "" }, localityOf),
+    };
+  }, [filters]);
 
   const set = (patch) => onFiltersChange(patch);
 
@@ -95,7 +113,7 @@ export default function PropertyFilters({
       label: `Max ${steps.find((s) => String(s.value) === String(filters.maxPrice))?.label || filters.maxPrice}`,
       clear: { maxPrice: "" },
     });
-  if (filters.bedrooms)
+  if (filters.bedrooms && !hideBeds)
     chips.push({
       k: "beds",
       label: `${filters.bedrooms}+ Beds`,
@@ -107,6 +125,8 @@ export default function PropertyFilters({
       label: `“${filters.search}”`,
       clear: { search: "" },
     });
+  if (filters.saved)
+    chips.push({ k: "saved", label: "Saved", clear: { saved: "" } });
 
   const panel = (
     <div className="space-y-5">
@@ -159,7 +179,7 @@ export default function PropertyFilters({
               ...cityOptions.map((c) => ({
                 value: c,
                 label: c,
-                count: countBy.city[c] || 0,
+                count: counts.city[c] || 0,
               })),
             ]}
           />
@@ -181,7 +201,11 @@ export default function PropertyFilters({
                   ? `All areas in ${filters.city}`
                   : "Select a city first",
               },
-              ...localities.map((l) => ({ value: l, label: l })),
+              ...localities.map((l) => ({
+                value: l,
+                label: l,
+                count: counts.locality[l] || 0,
+              })),
             ]}
           />
         </Field>
@@ -207,7 +231,14 @@ export default function PropertyFilters({
             <button
               key={t}
               type="button"
-              onClick={() => set({ type: filters.type === t ? "" : t })}
+              onClick={() => {
+                const next = filters.type === t ? "" : t;
+                set(
+                  noBedroomTypes.includes(next)
+                    ? { type: next, bedrooms: "" }
+                    : { type: next },
+                );
+              }}
               className={cn(
                 "px-3 py-1.5 rounded-full text-xs font-semibold border transition cursor-pointer",
                 filters.type === t
@@ -215,7 +246,7 @@ export default function PropertyFilters({
                   : "bg-white border-gray-200 text-gray-600 hover:border-[#c8922f] hover:text-[#c8922f]",
               )}
             >
-              {t} <span className="opacity-60">{countBy.type[t] || 0}</span>
+              {t} <span className="opacity-60">{counts.type[t] || 0}</span>
             </button>
           ))}
         </div>
@@ -264,7 +295,8 @@ export default function PropertyFilters({
         )}
       </div>
 
-      {/* Bedrooms */}
+      {/* Bedrooms (not applicable to plots / commercial) */}
+      {!hideBeds && (
       <div>
         <label className={labelCls}>Bedrooms</label>
         <div className="flex flex-wrap gap-2">
@@ -302,6 +334,7 @@ export default function PropertyFilters({
           ))}
         </div>
       </div>
+      )}
     </div>
   );
 

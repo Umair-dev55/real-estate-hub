@@ -19,6 +19,8 @@ import {
 import AnimatedSection from '@/components/AnimatedSection';
 import PropertyCard from '@/components/PropertyCard';
 import ContactCTA from '@/components/ContactCTA';
+import LazyImage from '@/components/LazyImage';
+import { useFavorites } from '@/lib/useFavorites.js';
 import {
   getPropertyBySlug,
   properties,
@@ -33,7 +35,8 @@ export default function PropertyDetail() {
 
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [copied, setCopied] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { isFavorite: checkFavorite, toggle: toggleFavorite } = useFavorites();
+  const isFavorite = checkFavorite(property?.id);
 
   // Reset active image when slug changes
   useEffect(() => {
@@ -72,8 +75,23 @@ export default function PropertyDetail() {
     image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&crop=face',
   };
 
+  // Rank: same city + type, then same type, then same city; newest first within a rank
+  const similarRank = (p) =>
+    p.city === property.city && p.type === property.type
+      ? 0
+      : p.type === property.type
+        ? 1
+        : p.city === property.city
+          ? 2
+          : 3;
   const similarProperties = properties
-    .filter((p) => p.id !== property.id && (p.type === property.type || p.city === property.city))
+    .filter((p) => p.id !== property.id && similarRank(p) < 3)
+    .sort(
+      (a, b) =>
+        similarRank(a) - similarRank(b) ||
+        new Date(b.listedAt) - new Date(a.listedAt) ||
+        b.id - a.id
+    )
     .slice(0, 3);
 
   const handleShare = () => {
@@ -134,7 +152,7 @@ export default function PropertyDetail() {
               </span>
             </button>
             <button
-              onClick={() => setIsFavorite(!isFavorite)}
+              onClick={() => toggleFavorite(property.id)}
               aria-label={isFavorite ? 'Remove from favorites' : 'Save to favorites'}
               className="p-1.5 rounded-full border border-gray-200 hover:border-gray-300 text-gray-700 transition cursor-pointer"
             >
@@ -157,16 +175,22 @@ export default function PropertyDetail() {
             {/* Main Featured Image */}
             <div className="relative rounded-3xl overflow-hidden aspect-[16/9] lg:aspect-[21/9] max-h-[560px] bg-gray-900 shadow-xl">
               <AnimatePresence mode="wait">
-                <motion.img
+                <motion.div
                   key={activeImageIndex}
-                  src={property.images[activeImageIndex] || property.images[0]}
-                  alt={property.title}
-                  initial={{ opacity: 0, scale: 1.02 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  className="absolute inset-0"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.35 }}
-                  className="w-full h-full object-cover"
-                />
+                >
+                  <LazyImage
+                    eager
+                    src={property.images[activeImageIndex] || property.images[0]}
+                    alt={property.title}
+                    wrapperClassName="bg-gray-900"
+                    className="w-full h-full object-cover"
+                  />
+                </motion.div>
               </AnimatePresence>
 
               {/* Status Badges */}
@@ -198,7 +222,7 @@ export default function PropertyDetail() {
                         : 'border-transparent opacity-70 hover:opacity-100'
                     }`}
                   >
-                    <img
+                    <LazyImage
                       src={imgUrl}
                       alt={`Thumbnail ${index + 1}`}
                       className="w-full h-full object-cover"
@@ -358,10 +382,11 @@ export default function PropertyDetail() {
                 className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100"
               >
                 <div className="flex items-center gap-4 mb-5 pb-5 border-b border-gray-100">
-                  <img
+                  <LazyImage
                     src={agent.image}
                     alt={agent.name}
-                    className="w-16 h-16 rounded-2xl object-cover shadow shrink-0"
+                    wrapperClassName="w-16 h-16 rounded-2xl shadow shrink-0"
+                    className="w-full h-full object-cover"
                   />
                   <div className="min-w-0">
                     <h3 className="font-serif text-lg font-bold text-[#102a43]">
@@ -431,7 +456,7 @@ export default function PropertyDetail() {
          ======================================================== */}
       <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white border-t border-gray-200 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] flex gap-3 shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
         <a
-          href={`tel:${agent.phone}`}
+          href={`tel:${String(agent.phone || '').replace(/[^\d+]/g, '')}`}
           className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-[#102a43] text-white py-2.5 text-sm font-semibold"
         >
           <Phone className="w-4 h-4" />

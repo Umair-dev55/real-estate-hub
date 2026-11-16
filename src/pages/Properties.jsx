@@ -5,6 +5,7 @@ import { Building } from 'lucide-react';
 import AnimatedSection from '@/components/AnimatedSection';
 import PropertyCard from '@/components/PropertyCard';
 import PropertyFilters from '@/components/PropertyFilters';
+import { useFavorites } from '@/lib/useFavorites.js';
 import {
   filterProperties,
   sortProperties,
@@ -20,6 +21,7 @@ const EMPTY_FILTERS = {
   maxPrice: '',
   bedrooms: '',
   search: '',
+  saved: '',
 };
 
 const readFiltersFromParams = (params) => ({
@@ -32,6 +34,7 @@ const readFiltersFromParams = (params) => ({
   maxPrice: params.get('maxPrice') || '',
   bedrooms: params.get('bedrooms') || '',
   search: params.get('search') || '',
+  saved: params.get('saved') || '',
 });
 
 // Grid animation: uses `animate` (not whileInView) so cards always appear,
@@ -53,6 +56,7 @@ export default function Properties() {
   const [filters, setFilters] = useState(() => readFiltersFromParams(searchParams));
   const sortBy = searchParams.get('sort') || 'newest';
   const debounceTimerRef = useRef(null);
+  const { ids: savedIds } = useFavorites();
 
   // Sync state if URL search params change externally (browser back/forward, hero search)
   useEffect(() => {
@@ -83,7 +87,11 @@ export default function Properties() {
     updateUrlParams(updated);
   };
 
-  const handleSortChange = (value) => updateUrlParams(filters, value);
+  const handleSortChange = (value) => {
+    // A pending search debounce would otherwise overwrite the new sort
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    updateUrlParams(filters, value);
+  };
 
   const handleFilterChange = (key, value) => {
     const updated = { ...filters, [key]: value };
@@ -108,9 +116,10 @@ export default function Properties() {
 
   // Filtered and sorted properties
   const filteredList = useMemo(() => {
-    const filtered = filterProperties(filters) || [];
+    let filtered = filterProperties(filters) || [];
+    if (filters.saved) filtered = filtered.filter((p) => savedIds.includes(p.id));
     return sortProperties(filtered, sortBy) || [];
-  }, [filters, sortBy]);
+  }, [filters, sortBy, savedIds]);
 
   return (
     <div className="pt-24 pb-20 bg-gray-50/50 min-h-screen">

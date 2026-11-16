@@ -11,6 +11,7 @@ const Properties = lazy(() => import('./pages/Properties'));
 const PropertyDetail = lazy(() => import('./pages/PropertyDetail'));
 const About = lazy(() => import('./pages/About'));
 const Contact = lazy(() => import('./pages/Contact'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 function PageLoader() {
   return (
@@ -86,6 +87,14 @@ export default function App() {
                 element={
                   <PageWrapper>
                     <Contact />
+                  </PageWrapper>
+                }
+              />
+              <Route
+                path="*"
+                element={
+                  <PageWrapper>
+                    <NotFound />
                   </PageWrapper>
                 }
               />

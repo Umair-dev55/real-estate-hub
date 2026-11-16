@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Phone, MessageCircle, Calendar, Send, CheckCircle2, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { getAgentById, companyInfo } from '@/data/data.js';
+import { submitForm } from '@/lib/submitForm.js';
 
 export default function ContactCTA({ property, agentId, className = '' }) {
   const agent = getAgentById(agentId) || {
@@ -11,7 +12,7 @@ export default function ContactCTA({ property, agentId, className = '' }) {
     email: companyInfo.email,
   };
 
-  const [modalType, setModalType] = useState(null); // 'visit' | 'inquiry' | null
+  const [modalType, setModalTypeRaw] = useState(null); // 'visit' | 'inquiry' | null
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -21,6 +22,13 @@ export default function ContactCTA({ property, agentId, className = '' }) {
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
+
+  const setModalType = (type) => {
+    setError('');
+    setModalTypeRaw(type);
+  };
 
   const cleanPhone = (agent.phone || companyInfo.phone).replace(/\s+/g, '');
   const cleanWhatsapp = (agent.whatsapp || companyInfo.whatsapp).replace(/[^0-9]/g, '');
@@ -31,8 +39,35 @@ export default function ContactCTA({ property, agentId, className = '' }) {
     }. Please provide more details.`
   );
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (sending) return;
+    setError('');
+
+    // Honeypot: bots fill hidden fields. Pretend success, send nothing.
+    const isBot = Boolean(e.currentTarget.elements.namedItem('_gotcha')?.value);
+    if (!isBot) {
+      setSending(true);
+      try {
+        const isVisit = modalType === 'visit';
+        await submitForm({
+          form: isVisit ? 'visit-booking' : 'property-inquiry',
+          _subject: `${isVisit ? 'Visit booking' : 'Property inquiry'}: ${property?.title || ''}`,
+          property: property?.title || '',
+          propertyId: property?.id ?? '',
+          location: property?.location || '',
+          city: property?.city || '',
+          agent: agent.name,
+          ...formData,
+        });
+      } catch (err) {
+        setError(err.message);
+        setSending(false);
+        return;
+      }
+      setSending(false);
+    }
+
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
@@ -173,6 +208,14 @@ export default function ContactCTA({ property, agentId, className = '' }) {
                   </div>
 
                   <form onSubmit={handleSubmit} className="space-y-3.5">
+                    <input
+                  type="text"
+                  name="_gotcha"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0 }}
+                />
                     <div>
                       <label className="block text-xs font-semibold text-gray-700 mb-1">
                         Your Full Name *
@@ -271,15 +314,24 @@ export default function ContactCTA({ property, agentId, className = '' }) {
                       />
                     </div>
 
+                    {error && (
+                      <p role="alert" className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3.5 py-2.5">
+                        {error}
+                      </p>
+                    )}
+
                     <button
                       type="submit"
-                      className="w-full mt-2 py-3 bg-[#c9a96e] hover:bg-[#b8954f] text-white font-semibold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                      disabled={sending}
+                      className="w-full mt-2 py-3 bg-[#c9a96e] hover:bg-[#b8954f] text-white font-semibold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                       <Send className="w-4 h-4" />
                       <span>
-                        {modalType === 'visit'
-                          ? 'Confirm Visit Booking'
-                          : 'Send Property Inquiry'}
+                        {sending
+                          ? 'Sending...'
+                          : modalType === 'visit'
+                            ? 'Confirm Visit Booking'
+                            : 'Send Property Inquiry'}
                       </span>
                     </button>
                   </form>

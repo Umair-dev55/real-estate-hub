@@ -119,6 +119,7 @@ export const locations = [
   "DHA Phase 8, Lahore",
   "Bahria Town, Lahore",
   "Gulberg, Lahore",
+  "Gulberg III, Lahore",
   "Johar Town, Lahore",
   "Model Town, Lahore",
   "Cantt, Lahore",
@@ -172,6 +173,9 @@ export const propertyTypes = [
 // ---- PURPOSE ----
 export const purposes = ["Buy", "Rent"];
 
+// Types where a bedrooms filter does not apply
+export const noBedroomTypes = ["Plot", "Commercial"];
+
 // ---- PRICE RANGES ----
 export const buyPriceRanges = [
   { label: "Under 50 Lakh", min: 0, max: 5000000 },
@@ -201,6 +205,8 @@ export const priceSteps = {
     { label: "3 Crore", value: 30000000 },
     { label: "5 Crore", value: 50000000 },
     { label: "10 Crore", value: 100000000 },
+    { label: "15 Crore", value: 150000000 },
+    { label: "25 Crore", value: 250000000 },
   ],
   Rent: [
     { label: "50 Thousand", value: 50000 },
@@ -398,6 +404,7 @@ export const properties = [
     yearBuilt: 2023,
     featured: true,
     new: true,
+    listedAt: "2026-11-12",
     description:
       "An extraordinary 1 Kanal villa in the heart of DHA Phase 6, Lahore. This architectural masterpiece features 6 spacious bedrooms, a grand living area, Italian marble flooring, and a private swimming pool. The property boasts smart home technology, solar panels, and a beautifully landscaped garden.",
     amenities: [
@@ -443,6 +450,7 @@ export const properties = [
     yearBuilt: 2024,
     featured: true,
     new: true,
+    listedAt: "2026-11-10",
     description:
       "A stunning 3-bedroom luxury apartment in the iconic Skyline Tower, Gulberg III. Features floor-to-ceiling windows with panoramic city views, imported kitchen fixtures, and premium finishes throughout. Located in the heart of Lahore's commercial hub.",
     amenities: [
@@ -483,6 +491,7 @@ export const properties = [
     yearBuilt: 2023,
     featured: true,
     new: false,
+    listedAt: "2026-09-28",
     description:
       "A breathtaking penthouse at the top of Bahria Heights with 360-degree views of the Margalla Hills. This 4-bedroom luxury residence features a private terrace, jacuzzi, and an open-plan living area with double-height ceilings.",
     amenities: [
@@ -525,6 +534,7 @@ export const properties = [
     yearBuilt: 2022,
     featured: true,
     new: false,
+    listedAt: "2026-09-15",
     description:
       "A beautifully designed 10 Marla villa in DHA Phase 2, Islamabad. Surrounded by lush greenery, this villa offers a perfect blend of modern architecture and natural serenity. Ideal for families seeking a peaceful lifestyle with premium amenities.",
     amenities: [
@@ -566,6 +576,7 @@ export const properties = [
     yearBuilt: 2024,
     featured: true,
     new: true,
+    listedAt: "2026-11-05",
     description:
       "A premium sea-facing apartment in Clifton, Karachi with breathtaking Arabian Sea views. Modern open-plan design, imported Italian kitchen, and floor-to-ceiling glass windows. Located in an exclusive gated community with world-class amenities.",
     amenities: [
@@ -607,6 +618,7 @@ export const properties = [
     yearBuilt: 2022,
     featured: true,
     new: false,
+    listedAt: "2026-09-02",
     description:
       "A magnificent 2 Kanal estate in Bahria Town, Lahore. This palatial residence features 8 bedrooms, grand marble hallways, a private cinema, indoor swimming pool, and a sprawling landscaped garden. The epitome of luxury living in Pakistan.",
     amenities: [
@@ -654,6 +666,7 @@ export const properties = [
     yearBuilt: 2023,
     featured: false,
     new: true,
+    listedAt: "2026-10-28",
     description:
       "A chic, fully furnished studio apartment in the prestigious F-7 sector of Islamabad. Perfect for professionals and young couples. Features modern interiors, a compact kitchen, and access to building amenities.",
     amenities: [
@@ -690,6 +703,7 @@ export const properties = [
     yearBuilt: 2024,
     featured: false,
     new: true,
+    listedAt: "2026-10-24",
     description:
       "A state-of-the-art commercial plaza on Lahore's Main Boulevard, Gulberg. Features 6 floors of premium office spaces, ground floor retail outlets, basement parking, and modern elevator systems. Ideal for corporate offices and retail businesses.",
     amenities: [
@@ -726,6 +740,7 @@ export const properties = [
     yearBuilt: 2021,
     featured: false,
     new: false,
+    listedAt: "2026-08-20",
     description:
       "A stunning farmhouse on Bedian Road featuring a private lake, fruit orchards, and expansive green lawns. Perfect weekend getaway with 5 bedrooms, outdoor BBQ area, and horse riding facility.",
     amenities: [
@@ -765,6 +780,7 @@ export const properties = [
     yearBuilt: 2023,
     featured: false,
     new: false,
+    listedAt: "2026-08-05",
     description:
       "A sophisticated 1 Kanal residence in DHA Phase 7 with contemporary architecture. Features imported fixtures, a modular kitchen, home office space, and a beautifully maintained garden. Located on a prime corner plot.",
     amenities: [
@@ -806,6 +822,7 @@ export const properties = [
     yearBuilt: 2022,
     featured: false,
     new: false,
+    listedAt: "2026-07-22",
     description:
       "A beautiful 3-bedroom apartment with stunning Margalla Hills views. Modern design, spacious balcony, and access to community pool and gym. Located in a secure gated complex in E-11.",
     amenities: [
@@ -844,6 +861,7 @@ export const properties = [
     yearBuilt: 2023,
     featured: false,
     new: true,
+    listedAt: "2026-10-20",
     description:
       "An exquisite 500 sq yard villa in DHA Phase 8, Karachi. Features a contemporary minimalist design, imported marble flooring, a private rooftop lounge, and state-of-the-art security. One of the finest residences in Karachi's Defence.",
     amenities: [
@@ -887,6 +905,7 @@ export const properties = [
     yearBuilt: null,
     featured: false,
     new: false,
+    listedAt: "2026-07-10",
     description:
       "A prime 1 Kanal residential plot in DHA Phase 5, Lahore. Located on a wide 60-ft road, ideal for building your dream home. All utilities available including sui gas, electricity, and water. Perfectly positioned near parks and commercial areas.",
     amenities: ["Park Facing", "Corner Plot", "Mosque Nearby", "School Nearby"],
@@ -915,6 +934,7 @@ export const properties = [
     yearBuilt: 2020,
     featured: false,
     new: false,
+    listedAt: "2026-06-25",
     description:
       "A well-maintained 10 Marla family home in Johar Town, Lahore. Close to schools, hospitals, and markets. Features 4 bedrooms, a large drawing room, and a kitchen garden. Perfect for a growing family.",
     amenities: [
@@ -954,6 +974,7 @@ export const properties = [
     yearBuilt: 2021,
     featured: false,
     new: false,
+    listedAt: "2026-06-12",
     description:
       "A well-appointed 3-bedroom apartment in Gulshan-e-Iqbal, Karachi. Features modern interiors, a spacious kitchen, and is located near major shopping centers and schools. Ideal for families.",
     amenities: [
@@ -992,6 +1013,7 @@ export const properties = [
     yearBuilt: 2019,
     featured: false,
     new: false,
+    listedAt: "2026-05-30",
     description:
       "A beautifully renovated heritage-style home in Model Town, Lahore. Combines classic architectural charm with modern amenities. Features spacious rooms, a grand entrance, and a mature garden.",
     amenities: [
@@ -1132,11 +1154,15 @@ export function filterProperties({
   return properties.filter((p) => {
     if (country && p.country !== country) return false;
     if (city && p.city !== city) return false;
-    if (location && !p.location.toLowerCase().includes(location.toLowerCase()))
+    if (
+      location &&
+      p.location.split(",")[0].trim().toLowerCase() !== location.toLowerCase()
+    )
       return false;
     if (type && p.type !== type) return false;
     if (purpose && p.purpose !== purpose) return false;
-    if (bedrooms && p.bedrooms < Number(bedrooms)) return false;
+    if (bedrooms && !noBedroomTypes.includes(type) && p.bedrooms < Number(bedrooms))
+      return false;
     if (minPrice && p.price < Number(minPrice)) return false;
     if (maxPrice && p.price > Number(maxPrice)) return false;
     if (q) {
@@ -1150,17 +1176,20 @@ export function filterProperties({
 
 export function sortProperties(propertyList, sortBy) {
   const sorted = [...propertyList];
+  const byId = (a, b) => a.id - b.id;
   switch (sortBy) {
     case "price-low":
-      return sorted.sort((a, b) => a.price - b.price);
+      return sorted.sort((a, b) => a.price - b.price || byId(a, b));
     case "price-high":
-      return sorted.sort((a, b) => b.price - a.price);
+      return sorted.sort((a, b) => b.price - a.price || byId(a, b));
     case "area-high":
-      return sorted.sort((a, b) => b.areaSqft - a.areaSqft);
+      return sorted.sort((a, b) => b.areaSqft - a.areaSqft || byId(a, b));
     case "beds-high":
-      return sorted.sort((a, b) => b.bedrooms - a.bedrooms);
+      return sorted.sort((a, b) => b.bedrooms - a.bedrooms || byId(a, b));
     case "newest":
     default:
-      return sorted.sort((a, b) => (b.new === a.new ? 0 : b.new ? 1 : -1));
+      return sorted.sort(
+        (a, b) => new Date(b.listedAt) - new Date(a.listedAt) || b.id - a.id,
+      );
   }
 }

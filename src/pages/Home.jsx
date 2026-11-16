@@ -20,6 +20,7 @@ import PropertyCard from "@/components/PropertyCard";
 import SectionHeading from "@/components/SectionHeading";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import CustomSelect from "@/components/CustomSelect";
+import LazyImage from "@/components/LazyImage";
 import {
   getFeaturedProperties,
   trustIndicators,
@@ -76,6 +77,7 @@ export default function Home() {
             <img
               src="https://ik.imagekit.io/x9svten4i/Real%20Estate/Zameen%20Elite%20_%20Premium%20Real%20Estate%20in%20Pakistan/Home/imgi_3_photo-1600596542815-ffad4c1539a9.webp?updatedAt=1794781604090"
               alt="Luxury Architecture Villa in Pakistan"
+              fetchPriority="high"
               className="w-full h-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-[#0a1929]/90 via-[#102a43]/75 to-transparent" />
@@ -288,7 +290,7 @@ export default function Home() {
               className="lg:col-span-6 relative"
             >
               <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] bg-gray-100">
-                <img
+                <LazyImage
                   src="https://ik.imagekit.io/x9svten4i/Real%20Estate/Zameen%20Elite%20_%20Premium%20Real%20Estate%20in%20Pakistan/Home/imgi_4_photo-1600607687939-ce8a6c25118c.webp?updatedAt=1794781603938"
                   alt="Modern Luxury Living Room interior in Pakistan"
                   className="w-full h-full object-cover"
@@ -364,7 +366,7 @@ export default function Home() {
             className="relative rounded-3xl bg-gradient-to-r from-[#102a43] via-[#1b3a57] to-[#0a1929] overflow-hidden p-8 sm:p-12 lg:p-16 shadow-2xl"
           >
             <div className="absolute right-0 top-0 bottom-0 w-full lg:w-1/2 opacity-25 lg:opacity-60 pointer-events-none overflow-hidden">
-              <img
+              <LazyImage
                 src="https://ik.imagekit.io/x9svten4i/Real%20Estate/Zameen%20Elite%20_%20Premium%20Real%20Estate%20in%20Pakistan/Home/imgi_7_photo-1564013799919-ab600027ffc6.webp?updatedAt=1794781604514"
                 alt="Architecture"
                 className="w-full h-full object-cover object-right"
